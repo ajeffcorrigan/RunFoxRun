@@ -80,5 +80,13 @@ public class jAnimator {
 	public TextureRegion getCurrentFrame(float sTime, boolean ploop) {
 		return this.jAnimate.getKeyFrame(sTime, ploop);
 	}
+	
+	public void setPlayMode(Animation.PlayMode plmode) {
+		this.jAnimate.setPlayMode(plmode);
+	}
+	
+	public void setStateTime(float time) {
+		this.jAnimate.setFrameDuration(time);
+	}
 
 }

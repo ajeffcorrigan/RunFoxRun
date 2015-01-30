@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -16,7 +17,7 @@ public class RunFoxRun extends ApplicationAdapter {
 	private static final float FOX_JUMP_IMPULSE = 360;
 	private static final float GRAVITY = -10;
 	private static final float FOX_VELOCITY_X = 200;
-	private static final float FOX_START_Y = 50;
+	private static final float FOX_START_Y = 40;
 	private static final float FOX_START_X = 75;
 	
 	//Checks if assets have loaded.
@@ -61,7 +62,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		//Create running fox animation.
 		foxrun = new jAnimator(new Texture("run_fox_sheet.png"),12,1,true,false,.05f);
-		foxjump = new jAnimator(new Texture("jump_fox_sheet.png"),13,2,true,false,.2f);
+		foxjump = new jAnimator(new Texture("fox_jump_animation.png"),13,2,true,false,0f);
 		
 		//Create background item.
 		bghill = new jBackground(new Texture("pinehills_distant_1.png"), 400, -75, 0, 1.05f);
@@ -93,13 +94,16 @@ public class RunFoxRun extends ApplicationAdapter {
         if(foxstate == FoxState.run) { 
         	currentFrame = foxrun.getCurrentFrame(stateTime); 
         } else if (foxstate == FoxState.jump) {
-        	currentFrame = foxjump.getCurrentFrame(stateTime); 
+        	currentFrame = foxjump.getCurrentFrame(stateTime,false); 
         }
         
         //Check for input
         if(Gdx.input.justTouched() && foxPosition.y <= FOX_START_Y + 3) {
         	foxVelocity.set(FOX_VELOCITY_X, FOX_JUMP_IMPULSE);
-        	//foxstate = FoxState.jump;
+        	foxjump.setPlayMode(Animation.PlayMode.LOOP);
+        	foxjump.setStateTime(.09f);
+        	currentFrame = foxjump.getCurrentFrame(stateTime,false); 
+        	foxstate = FoxState.jump;
         }
         
         //Jumping mechanism
@@ -107,6 +111,7 @@ public class RunFoxRun extends ApplicationAdapter {
         	foxPosition.y = FOX_START_Y;
         	foxVelocity.y = 0;
         	foxstate = FoxState.run;
+        	foxjump.setStateTime(0f);
         } else {
         	foxVelocity.add(gravity);
         }
