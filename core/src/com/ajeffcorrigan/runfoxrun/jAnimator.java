@@ -21,6 +21,11 @@ public class jAnimator {
 	private boolean jFlipX = false;
 	private boolean jFlipY = false;
 	private float fSpeed;
+	private boolean customAni = false;
+	private float stateTime;
+	private boolean animationInProgress = false;
+	private int cFrame;
+	private int endFrame;
 	
 	/**
 	 * 
@@ -44,6 +49,17 @@ public class jAnimator {
 		createAnimation();
 	}
 	
+	public jAnimator(Texture p_sprite, int p_cols, int p_rows, boolean p_flipx, boolean p_flipy, float p_speed, boolean p_customani) {
+		this.jSpriteSheet = p_sprite;
+		this.iCols = p_cols;
+		this.iRows = p_rows;
+		this.jFlipX = p_flipx;
+		this.jFlipY = p_flipy;
+		this.fSpeed = p_speed;
+		this.customAni = p_customani;
+		createAnimation();
+	}
+	
 	private void createAnimation() {
 		int index = 0;
 		
@@ -58,18 +74,30 @@ public class jAnimator {
             	this.jSheetSplit[index++] = tmp[i][j];
             }
         }
-        
-        this.jAnimate = new Animation(this.fSpeed, this.jSheetSplit);
-        
-	}	
+        if(!this.customAni) { 
+        	this.jAnimate = new Animation(this.fSpeed, this.jSheetSplit); 
+        } else {
+        	this.endFrame = this.jSheetSplit.length - 1;
+        }
+	}
 	
+
 	/**
 	 * Return the current frame in the animation.
 	 * @param sTime State time to gather frame.
 	 * @return TextureRegion of frame.
 	 */
 	public TextureRegion getCurrentFrame(float sTime) {
-		return this.jAnimate.getKeyFrame(sTime, true);
+		if(this.customAni) {
+			if(this.stateTime + this.fSpeed <= sTime) {
+				this.stateTime = sTime;
+				this.cFrame++;
+				if (this.cFrame >= this.endFrame) { this.cFrame = this.endFrame; }
+			}
+			return this.jSheetSplit[this.cFrame];
+		} else {
+			return this.jAnimate.getKeyFrame(sTime, true);
+		}
 	}
 	
 	/**
@@ -85,8 +113,18 @@ public class jAnimator {
 		this.jAnimate.setPlayMode(plmode);
 	}
 	
+	/**
+	 * @param time
+	 */
 	public void setStateTime(float time) {
-		this.jAnimate.setFrameDuration(time);
+		this.stateTime = time;
+	}
+	
+	public void setAnimationProgress(boolean animove) {
+		if (!this.animationInProgress) {
+			this.cFrame = 0;
+		} 
+		this.animationInProgress = animove;
 	}
 
 }

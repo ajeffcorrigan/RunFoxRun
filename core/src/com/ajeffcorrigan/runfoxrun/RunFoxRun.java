@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 public class RunFoxRun extends ApplicationAdapter {
 
 	//Game constants
-	private static final float FOX_JUMP_IMPULSE = 360;
+	private static final float FOX_JUMP_IMPULSE = 350;
 	private static final float GRAVITY = -10;
 	private static final float FOX_VELOCITY_X = 200;
 	private static final float FOX_START_Y = 40;
@@ -62,7 +62,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		//Create running fox animation.
 		foxrun = new jAnimator(new Texture("run_fox_sheet.png"),12,1,true,false,.05f);
-		foxjump = new jAnimator(new Texture("fox_jump_animation.png"),13,2,true,false,0f);
+		foxjump = new jAnimator(new Texture("fox_jump_animation.png"),8,2,false,false,.071f,true);
 		
 		//Create background item.
 		bghill = new jBackground(new Texture("pinehills_distant_1.png"), 400, -75, 0, 1.05f);
@@ -94,15 +94,15 @@ public class RunFoxRun extends ApplicationAdapter {
         if(foxstate == FoxState.run) { 
         	currentFrame = foxrun.getCurrentFrame(stateTime); 
         } else if (foxstate == FoxState.jump) {
-        	currentFrame = foxjump.getCurrentFrame(stateTime,false); 
+        	currentFrame = foxjump.getCurrentFrame(stateTime); 
         }
         
         //Check for input
         if(Gdx.input.justTouched() && foxPosition.y <= FOX_START_Y + 3) {
         	foxVelocity.set(FOX_VELOCITY_X, FOX_JUMP_IMPULSE);
-        	foxjump.setPlayMode(Animation.PlayMode.LOOP);
-        	foxjump.setStateTime(.09f);
-        	currentFrame = foxjump.getCurrentFrame(stateTime,false); 
+        	foxjump.setStateTime(stateTime);
+        	foxjump.setAnimationProgress(true);
+        	currentFrame = foxjump.getCurrentFrame(stateTime); 
         	foxstate = FoxState.jump;
         }
         
@@ -111,7 +111,7 @@ public class RunFoxRun extends ApplicationAdapter {
         	foxPosition.y = FOX_START_Y;
         	foxVelocity.y = 0;
         	foxstate = FoxState.run;
-        	foxjump.setStateTime(0f);
+        	foxjump.setAnimationProgress(false);
         } else {
         	foxVelocity.add(gravity);
         }
