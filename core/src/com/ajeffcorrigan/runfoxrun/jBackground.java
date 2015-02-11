@@ -1,16 +1,15 @@
 package com.ajeffcorrigan.runfoxrun;
 
 import java.util.Comparator;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class jBackground implements Comparator<jBackground>{
 	
 	private Texture bgimage;	//Texture to load as image.
 	private int bglevel;
-	private float xCoord;		//X Location of the texture.
-	private float yCoord;		//Y Location of the texture.
+	private Vector2 bgPos;
 	private float bgSpeed;
 	private boolean reSpawn;
 	private float imgHeight;
@@ -24,8 +23,7 @@ public class jBackground implements Comparator<jBackground>{
 	public jBackground(Texture p_img) {
 		this.bgimage = p_img;
 		this.bglevel = 0;
-		this.xCoord = 0;
-		this.yCoord = 0;
+		this.bgPos = new Vector2(0,0);
 		this.bgSpeed = 0;
 		this.reSpawn = false;
 		this.imgHeight = this.getImageHeight();
@@ -35,57 +33,63 @@ public class jBackground implements Comparator<jBackground>{
 	public jBackground(Texture p_img, int p_level) {
 		this.bgimage = p_img;
 		this.bglevel = p_level;
-		this.xCoord = 0;
-		this.yCoord = 0;
+		this.bgPos = new Vector2(0,0);
 		this.bgSpeed = 0;
 		this.reSpawn = false;
 		this.imgHeight = this.getImageHeight();
 		this.imgWidth = this.getImageWidth();
 	}
 
-	public jBackground(Texture p_img, float p_xc, float p_yc, int p_bglev, float p_speed) {
+	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, float p_speed) {
 		// TODO Auto-generated constructor stub
 		this.bgimage = p_img;
 		this.bglevel = p_bglev;
-		this.xCoord = p_xc;
-		this.yCoord = p_yc;
+		this.bgPos = new Vector2(p_pos);
 		this.bgSpeed = p_speed;
 		this.imgHeight = this.getImageHeight();
 		this.imgWidth = this.getImageWidth();
 	}
 	
-	public jBackground(Texture p_img, float p_xc, float p_yc, int p_bglev, float p_speed, boolean p_respawn) {
+	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, float p_speed, boolean p_respawn) {
 		// TODO Auto-generated constructor stub
 		this.bgimage = p_img;
 		this.bglevel = p_bglev;
-		this.xCoord = p_xc;
-		this.yCoord = p_yc;
+		this.bgPos = new Vector2(p_pos);
 		this.bgSpeed = p_speed;
 		this.reSpawn = p_respawn;
 		this.imgHeight = this.getImageHeight();
 		this.imgWidth = this.getImageWidth();
 	}
 	
-	public jBackground(Texture p_img, float p_xc, float p_yc, int p_bglev, float p_speed, boolean p_respawn, float p_scale) {
+	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, float p_speed, boolean p_respawn, float p_scale) {
 		// TODO Auto-generated constructor stub
 		this.bgimage = p_img;
 		this.bglevel = p_bglev;
-		this.xCoord = p_xc;
-		this.yCoord = p_yc;
+		this.bgPos = new Vector2(p_pos);
 		this.bgSpeed = p_speed;
 		this.reSpawn = p_respawn;
 		this.imgHeight = this.getImageHeight() * p_scale;
 		this.imgWidth = this.getImageWidth() * p_scale;
 	}
 	
-	public void updateBackgroundX(float dtime) { this.xCoord += (dtime * this.bgSpeed); }
-	public Texture getBgimage() { return bgimage; }
-	public float getxCoord() { return xCoord; }
-	public void setxCoord(float xCoord) { this.xCoord = xCoord; }
-	public float getyCoord() { return yCoord; }
+	public void updateBackgroundX(float dtime) { 
+		this.bgPos.x += (dtime * this.bgSpeed); 
+	}
+	public Texture getBgimage() { 
+		return bgimage; 
+	}
+	public float getxCoord() { 
+		return this.bgPos.x; 
+	}
+	public void setxCoord(float xCoord) { 
+		this.bgPos.x = xCoord; 
+	}
+	public float getyCoord() { 
+		return this.bgPos.y; 
+	}
 	
 	public float getWidthXCoord() {
-		return this.imgWidth + this.xCoord;
+		return this.imgWidth + this.bgPos.x;
 	}
 
 	/**
@@ -125,7 +129,7 @@ public class jBackground implements Comparator<jBackground>{
 	}
 	
 	public void draw(SpriteBatch sb) {
-		sb.draw(this.bgimage, this.xCoord, this.yCoord, this.imgWidth, this.imgHeight);
+		sb.draw(this.bgimage, this.bgPos.x, this.bgPos.y, this.imgWidth, this.imgHeight);
 	}
 
 }

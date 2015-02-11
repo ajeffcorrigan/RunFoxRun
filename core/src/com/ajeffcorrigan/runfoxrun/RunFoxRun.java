@@ -21,7 +21,7 @@ public class RunFoxRun extends ApplicationAdapter {
 	private static final float GRAVITY = -10;
 	private static final float FOX_START_Y = 40;
 	private static final float FOX_START_X = 75;
-	private static final float GAME_SPEED = -90f;
+	private static final float GAME_SPEED = -200f;
 	
 	
 	private boolean assetsInit = false;				//Checks if assets have loaded. 
@@ -43,8 +43,7 @@ public class RunFoxRun extends ApplicationAdapter {
 	
 	// jBackground objects
 	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();
-	
-	TextureRegion ground;
+	jBackground[] grounds = new jBackground[2];
     SpriteBatch   spriteBatch;
     TextureRegion currentFrame;
     
@@ -120,6 +119,17 @@ public class RunFoxRun extends ApplicationAdapter {
         //Be sure all background items are sorted by level.
         Collections.sort(bgitems, new jBackground());
         
+        //Update ground texture so always on screen
+        grounds[0].updateBackgroundX(deltaTime);
+        grounds[1].updateBackgroundX(deltaTime);
+        if(grounds[0].getWidthXCoord() <= 0) {
+        	grounds[0].setxCoord(grounds[1].getWidthXCoord());
+        }
+        if(grounds[1].getWidthXCoord() <= 0) {
+        	grounds[1].setxCoord(grounds[0].getWidthXCoord());
+        }
+        
+        
 		//Update background item
 		for(jBackground jb : bgitems) {
 			jb.updateBackgroundX(deltaTime);
@@ -137,6 +147,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		batch.setProjectionMatrix(camera.combined);
 			
+
 		
 		//Draw non interactive background items
 		batch.begin();
@@ -145,6 +156,12 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		//Draw live objects
 		
+		
+		//Draw ground
+		batch.begin();
+			grounds[0].draw(batch);
+			grounds[1].draw(batch);
+		batch.end();
 		
 		//Draw fox actor.
         batch.begin();
@@ -163,16 +180,19 @@ public class RunFoxRun extends ApplicationAdapter {
 	
 	private void createWorld() {
 		//Create background item.
-		bgitems.add(new jBackground(jAssets.getTexture("bush1"),600,20,1,GAME_SPEED,true));
-		bgitems.add(new jBackground(jAssets.getTexture("farpines"), 400, -75, 100, -1.45f));
-		bgitems.add(new jBackground(jAssets.getTexture("ground1"),0,0,0,0,false));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),400,30,3,GAME_SPEED + 5,true));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),234,30,4,GAME_SPEED + 40,true,.65f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),455,30,4,GAME_SPEED + 45,true,.60f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),502,30,4,GAME_SPEED + 20,true,.75f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),600,30,4,GAME_SPEED + 10,true,.85f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),100,30,4,GAME_SPEED + 5,true,.95f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),200,30,4,GAME_SPEED,true,1.2f));
+		bgitems.add(new jBackground(jAssets.getTexture("bush1"),new Vector2(600,30),1,GAME_SPEED,true));
+		bgitems.add(new jBackground(jAssets.getTexture("farpines"), new Vector2(400, -75), 100, -1.45f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(400,30),3,GAME_SPEED + 5,true));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(234,30),4,GAME_SPEED + 40,true,.65f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(455,30),4,GAME_SPEED + 45,true,.60f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(502,30),4,GAME_SPEED + 20,true,.75f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(600,30),4,GAME_SPEED + 10,true,.85f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(100,30),4,GAME_SPEED + 5,true,.95f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(200,30),4,GAME_SPEED,true,1.2f));
+		
+		grounds[0] = new jBackground(jAssets.getTexture("ground1"),new Vector2(0,0),0,GAME_SPEED,true);
+		grounds[1] = new jBackground(jAssets.getTexture("ground1"),new Vector2(grounds[0].getWidthXCoord(),0),0,GAME_SPEED,true);
+		
 	}
 	static enum FoxState {
 		run, jump
