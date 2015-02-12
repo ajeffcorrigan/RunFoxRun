@@ -146,23 +146,15 @@ public class RunFoxRun extends ApplicationAdapter {
 		camera.update();
 		
 		batch.setProjectionMatrix(camera.combined);
-			
-
-		
-		//Draw non interactive background items
+				
+		//Draw non interactive background items and ground texture
 		batch.begin();
 		for(jBackground jb : bgitems) { jb.draw(batch); }
+		for(jBackground gr : grounds) { gr.draw(batch); }
 		batch.end();
 		
 		//Draw live objects
-		
-		
-		//Draw ground
-		batch.begin();
-			grounds[0].draw(batch);
-			grounds[1].draw(batch);
-		batch.end();
-		
+						
 		//Draw fox actor.
         batch.begin();
         batch.draw(currentFrame, foxPosition.x, foxPosition.y);
