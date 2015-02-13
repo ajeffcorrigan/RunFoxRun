@@ -1,6 +1,7 @@
 package com.ajeffcorrigan.runfoxrun;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -22,27 +23,90 @@ public class jLiveActor{
 	
 	public jLiveActor(Texture p_img) {
 		this.itemImg = p_img;
-		this.actorPos.set(0, 0);
+		this.actorPos = new Vector2(0,0);
 		this.bgSpeed = 0;
 		this.reSpawn = false;
-		this.imgHeight = this.getImageHeight();
-		this.imgWidth = this.getImageWidth();
+		this.imgHeight = this.itemImg.getHeight();
+		this.imgWidth = this.itemImg.getWidth();
+		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+	}
+	
+	public jLiveActor(Texture p_img, Vector2 p_pos) {
+		this.itemImg = p_img;
+		this.actorPos = new Vector2(p_pos);
+		this.bgSpeed = 0;
+		this.reSpawn = false;
+		this.imgHeight = this.itemImg.getHeight();
+		this.imgWidth = this.itemImg.getWidth();
+		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+	}
+	
+	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed) {
+		this.itemImg = p_img;
+		this.actorPos = new Vector2(p_pos);
+		this.bgSpeed = p_speed;
+		this.reSpawn = false;
+		this.imgHeight = this.itemImg.getHeight();
+		this.imgWidth = this.itemImg.getWidth();
+		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+	}
+	
+	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed, boolean p_respawn) {
+		this.itemImg = p_img;
+		this.actorPos = new Vector2(p_pos);
+		this.bgSpeed = p_speed;
+		this.reSpawn = p_respawn;
+		this.imgHeight = this.itemImg.getHeight();
+		this.imgWidth = this.itemImg.getWidth();
+		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+	}
+	
+	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed, boolean p_respawn, float p_imgscale) {
+		this.itemImg = p_img;
+		this.actorPos = new Vector2(p_pos);
+		this.bgSpeed = p_speed;
+		this.reSpawn = p_respawn;
+		this.imgHeight = this.itemImg.getHeight() * p_imgscale;
+		this.imgWidth = this.itemImg.getWidth() * p_imgscale;
 		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
 	}
 
-	private float getImageWidth() {
-		// TODO Auto-generated method stub
-		return this.itemImg.getWidth();
+	public float getImageWidth() {
+		return this.imgWidth;
 	}
 
-	private float getImageHeight() {
-		// TODO Auto-generated method stub
-		return this.itemImg.getHeight();
+	public float getImageHeight() {
+		return this.imgHeight;
 	}
 	
-	public void updateLiveActor(Vector2 newPos) {
-		this.actorPos.set(newPos);
-		this.itemBounds.setPosition(newPos);
+	public void updateLiveActorX(float dtime) {
+		this.actorPos.x += (dtime * this.bgSpeed);
+		this.updateBounds();
+	}
+	
+	public void draw(SpriteBatch sb) {
+		sb.draw(this.itemImg, this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+	}
+
+	public float getWidthXCoord() {
+		return this.imgWidth + this.actorPos.x;
+	}
+
+	public boolean isReSpawn() {
+		return this.reSpawn;
+	}
+
+	public void setxCoord(int i) {
+		this.actorPos.x = i;
+		this.updateBounds();
+	}
+	
+	private void updateBounds() {
+		this.itemBounds.setPosition(actorPos);
+	}
+	
+	public Rectangle getBounds() {
+		return this.itemBounds;
 	}
 	
 	

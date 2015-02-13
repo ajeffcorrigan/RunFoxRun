@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class RunFoxRun extends ApplicationAdapter {
@@ -36,16 +37,19 @@ public class RunFoxRun extends ApplicationAdapter {
 	FoxState foxstate = FoxState.run;				
 	int coinCount = 0;								//Number of coins counted.
 	Random rand = new Random();						//Random number generator object.
+	float distanceRan = 0;							//Distance fox ran
+	
 	
 	// jAnimator class for the running fox.
 	jAnimator foxrun;
 	jAnimator foxjump;
 	
-	// jBackground objects
-	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();
+	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();	//Background objects
+	ArrayList<jLiveActor> liveItems = new ArrayList<jLiveActor>();
 	jBackground[] grounds = new jBackground[2];
     SpriteBatch   spriteBatch;
     TextureRegion currentFrame;
+    Rectangle foxBounds = new Rectangle();
     
 	
 	@Override
@@ -98,7 +102,7 @@ public class RunFoxRun extends ApplicationAdapter {
         
         //Determine which animation to use.
         if(foxstate == FoxState.run) { 
-        	currentFrame = foxrun.getCurrentFrame(stateTime); 
+        	currentFrame = foxrun.getCurrentFrame(stateTime);
         } else if (foxstate == FoxState.jump) {
         	currentFrame = foxjump.getCurrentFrame(stateTime); 
         }
@@ -111,6 +115,19 @@ public class RunFoxRun extends ApplicationAdapter {
         	foxjump.setAnimationProgress(false);
         } else {
         	foxVelocity.add(gravity);
+        }
+        foxBounds.set(foxPosition.x, foxPosition.y, currentFrame.getRegionWidth() - 10 , currentFrame.getRegionHeight() - 10);
+        
+        for(jLiveActor la : liveItems) {
+        	la.updateLiveActorX(deltaTime);
+        	if (foxBounds.overlaps(la.getBounds()) && la.isReSpawn()) {
+        		System.out.println("Got a coin!");
+				int min = (int)la.getImageWidth();
+				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
+        	} else if (la.getWidthXCoord() < 0 && la.isReSpawn()) {
+				int min = (int)la.getImageWidth();
+				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
+			}
         }
         
         //Move the fox.
@@ -154,6 +171,9 @@ public class RunFoxRun extends ApplicationAdapter {
 		batch.end();
 		
 		//Draw live objects
+		batch.begin();
+		for(jLiveActor la : liveItems) { la.draw(batch); } 
+		batch.end();
 						
 		//Draw fox actor.
         batch.begin();
@@ -166,6 +186,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		jAssets.loadTextureAs("farpines", "pinehills_distant_1.png");
 		jAssets.loadTextureAs("ground1", "crosssection_long.png");
 		jAssets.loadTextureAs("tree1", "tree_coniferous_1.png");
+		jAssets.loadTextureAs("coin", "coinGold.png");
 		
 		assetsInit = true;
 	}
@@ -184,6 +205,8 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		grounds[0] = new jBackground(jAssets.getTexture("ground1"),new Vector2(0,0),0,GAME_SPEED,true);
 		grounds[1] = new jBackground(jAssets.getTexture("ground1"),new Vector2(grounds[0].getWidthXCoord(),0),0,GAME_SPEED,true);
+		
+		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(400,50), GAME_SPEED, true, .80f));
 		
 	}
 	static enum FoxState {
