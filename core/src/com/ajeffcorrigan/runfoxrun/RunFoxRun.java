@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -37,6 +38,7 @@ public class RunFoxRun extends ApplicationAdapter {
 	private Random rand = new Random();					//Random number generator object.
 	private float distanceRan = 0;						//Distance fox ran
 	
+	private BitmapFont font;
 	ShapeRenderer shapeRenderer;
 	SpriteBatch batch;
 	OrthographicCamera camera;
@@ -64,6 +66,8 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
+		font = new BitmapFont();
+		font.setColor(Color.BLACK);
 		
 		//Create and setup the camera.
 		camera = new OrthographicCamera();
@@ -172,8 +176,10 @@ public class RunFoxRun extends ApplicationAdapter {
 				jb.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
 			} 
 		}
+		
+		if (this.upSpeedOk) { this.speedMultiplier += upSpeedVal; }
 		this.upSpeedOk = false;
-
+		this.distanceRan += deltaTime * speedMultiplier * .1;
 	}
 
 	private void drawWorld() {
@@ -196,6 +202,8 @@ public class RunFoxRun extends ApplicationAdapter {
 		//Draw fox actor.
         batch.begin();
         batch.draw(currentFrame, foxPosition.x, foxPosition.y);
+        font.draw(batch, "Coins: "+this.coinCount, 20, Gdx.graphics.getHeight()-30);
+        font.draw(batch, "Distance Ran: " + (int)this.distanceRan, 20, Gdx.graphics.getHeight()-50);
         batch.end();
         
         //Debug collision        
@@ -206,6 +214,8 @@ public class RunFoxRun extends ApplicationAdapter {
         	shapeRenderer.rect(la.getBounds().x, la.getBounds().y, la.getBounds().width, la.getBounds().height);
         } 
         shapeRenderer.end();
+        
+        
 	}
 	
 	private void loadAssets() {
