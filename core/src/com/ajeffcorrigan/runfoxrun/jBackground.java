@@ -10,11 +10,11 @@ public class jBackground implements Comparator<jBackground>{
 	private Texture bgimage;	//Texture to load as image.
 	private int bglevel;
 	private Vector2 bgPos;
-	private float bgSpeed;
 	private boolean reSpawn;
 	private float imgHeight;
 	private float imgWidth;
 	public String bgName;
+	private float speedMultiplier;
 
 	public jBackground() {
 		// TODO Auto-generated constructor stub
@@ -24,7 +24,7 @@ public class jBackground implements Comparator<jBackground>{
 		this.bgimage = p_img;
 		this.bglevel = 0;
 		this.bgPos = new Vector2(0,0);
-		this.bgSpeed = 0;
+		this.speedMultiplier = 1;
 		this.reSpawn = false;
 		this.imgHeight = this.getImageHeight();
 		this.imgWidth = this.getImageWidth();
@@ -34,7 +34,7 @@ public class jBackground implements Comparator<jBackground>{
 		this.bgimage = p_img;
 		this.bglevel = p_level;
 		this.bgPos = new Vector2(0,0);
-		this.bgSpeed = 0;
+		this.speedMultiplier = 1;
 		this.reSpawn = false;
 		this.imgHeight = this.getImageHeight();
 		this.imgWidth = this.getImageWidth();
@@ -45,7 +45,7 @@ public class jBackground implements Comparator<jBackground>{
 		this.bgimage = p_img;
 		this.bglevel = p_bglev;
 		this.bgPos = new Vector2(p_pos);
-		this.bgSpeed = p_speed;
+		this.speedMultiplier = p_speed;
 		this.imgHeight = this.getImageHeight();
 		this.imgWidth = this.getImageWidth();
 	}
@@ -55,25 +55,37 @@ public class jBackground implements Comparator<jBackground>{
 		this.bgimage = p_img;
 		this.bglevel = p_bglev;
 		this.bgPos = new Vector2(p_pos);
-		this.bgSpeed = p_speed;
+		this.speedMultiplier = p_speed;
 		this.reSpawn = p_respawn;
 		this.imgHeight = this.getImageHeight();
 		this.imgWidth = this.getImageWidth();
 	}
+	
+	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, boolean p_respawn) {
+		// TODO Auto-generated constructor stub
+		this.bgimage = p_img;
+		this.bglevel = p_bglev;
+		this.bgPos = new Vector2(p_pos);
+		this.speedMultiplier = 1;
+		this.reSpawn = p_respawn;
+		this.imgHeight = this.getImageHeight();
+		this.imgWidth = this.getImageWidth();
+	}
+	
 	
 	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, float p_speed, boolean p_respawn, float p_scale) {
 		// TODO Auto-generated constructor stub
 		this.bgimage = p_img;
 		this.bglevel = p_bglev;
 		this.bgPos = new Vector2(p_pos);
-		this.bgSpeed = p_speed;
+		this.speedMultiplier = p_speed;
 		this.reSpawn = p_respawn;
 		this.imgHeight = this.getImageHeight() * p_scale;
 		this.imgWidth = this.getImageWidth() * p_scale;
 	}
 	
-	public void updateBackgroundX(float dtime) { 
-		this.bgPos.x += (dtime * this.bgSpeed); 
+	public void updateBackgroundX(float dtime) {
+		this.bgPos.x += (dtime * (RunFoxRun.GAME_SPEED * this.speedMultiplier)); 
 	}
 	public Texture getBgimage() { 
 		return bgimage; 
@@ -130,6 +142,10 @@ public class jBackground implements Comparator<jBackground>{
 	
 	public void draw(SpriteBatch sb) {
 		sb.draw(this.bgimage, this.bgPos.x, this.bgPos.y, this.imgWidth, this.imgHeight);
+	}
+	
+	public void addToMultiplier(float upSpd) {
+		this.speedMultiplier += upSpd;
 	}
 
 }

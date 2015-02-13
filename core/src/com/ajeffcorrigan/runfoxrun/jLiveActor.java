@@ -8,13 +8,13 @@ import com.badlogic.gdx.math.Vector2;
 public class jLiveActor{
 	
 	private Texture itemImg;	//Texture to load as image.
-	private Vector2 actorPos;
-	private float bgSpeed;		
+	private Vector2 actorPos;		
 	private boolean reSpawn;
 	private float imgHeight;
 	private float imgWidth;
 	private Rectangle itemBounds;
 	public String bgName;
+	private float speedMultiplier;
 	
 	
 	public jLiveActor() {
@@ -24,7 +24,7 @@ public class jLiveActor{
 	public jLiveActor(Texture p_img) {
 		this.itemImg = p_img;
 		this.actorPos = new Vector2(0,0);
-		this.bgSpeed = 0;
+		this.speedMultiplier = 1;
 		this.reSpawn = false;
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
@@ -34,7 +34,7 @@ public class jLiveActor{
 	public jLiveActor(Texture p_img, Vector2 p_pos) {
 		this.itemImg = p_img;
 		this.actorPos = new Vector2(p_pos);
-		this.bgSpeed = 0;
+		this.speedMultiplier = 1;
 		this.reSpawn = false;
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
@@ -44,7 +44,7 @@ public class jLiveActor{
 	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed) {
 		this.itemImg = p_img;
 		this.actorPos = new Vector2(p_pos);
-		this.bgSpeed = p_speed;
+		this.speedMultiplier = p_speed;
 		this.reSpawn = false;
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
@@ -54,7 +54,7 @@ public class jLiveActor{
 	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed, boolean p_respawn) {
 		this.itemImg = p_img;
 		this.actorPos = new Vector2(p_pos);
-		this.bgSpeed = p_speed;
+		this.speedMultiplier = p_speed;
 		this.reSpawn = p_respawn;
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
@@ -64,7 +64,7 @@ public class jLiveActor{
 	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed, boolean p_respawn, float p_imgscale) {
 		this.itemImg = p_img;
 		this.actorPos = new Vector2(p_pos);
-		this.bgSpeed = p_speed;
+		this.speedMultiplier = p_speed;
 		this.reSpawn = p_respawn;
 		this.imgHeight = this.itemImg.getHeight() * p_imgscale;
 		this.imgWidth = this.itemImg.getWidth() * p_imgscale;
@@ -80,7 +80,7 @@ public class jLiveActor{
 	}
 	
 	public void updateLiveActorX(float dtime) {
-		this.actorPos.x += (dtime * this.bgSpeed);
+		this.actorPos.x += (dtime * (RunFoxRun.GAME_SPEED * this.speedMultiplier));
 		this.updateBounds();
 	}
 	
@@ -107,6 +107,10 @@ public class jLiveActor{
 	
 	public Rectangle getBounds() {
 		return this.itemBounds;
+	}
+	
+	public void addToMultiplier(float upSpd) {
+		this.speedMultiplier += upSpd;
 	}
 	
 	
