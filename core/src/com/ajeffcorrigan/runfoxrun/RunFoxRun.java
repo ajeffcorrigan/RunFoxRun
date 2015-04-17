@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,13 +31,20 @@ public class RunFoxRun extends ApplicationAdapter {
 	private static final float BOUNDYOFFSET = 20;		//Fox bound y coordinate offset
 	private static final float BOUNDHEIGHT = 50;		//Fox bound height
 	private static final float BOUNDWIDTH = 75;			//Fox bound width
-	private static float speedMultiplier = 1;			//Speed multiplier	
+	private static final float UPSPEEDVAL = 0.06f;		//Speed up value.
+	private static final float GROUNDLEVEL = 60; 		//Actual ground level.
+	
+	private float speedMultiplier = 1;					//Speed multiplier	
 	private boolean assetsInit = false;					//Checks if assets have loaded. 
 	private float stateTime;							//Time passed.
 	private float deltaTime;							//Time between cycles.
 	private int coinCount = 0;							//Number of coins counted.
 	private Random rand = new Random();					//Random number generator object.
 	private float distanceRan = 0;						//Distance fox ran
+	private float gw;									//Game width
+	private float gh;									//Game height
+	private boolean upSpeedOk = false;					//Flag to indicate speed up should occur.
+    private float maxGroundTile;						//Last ground tile x coordinate.
 	
 	private BitmapFont font;
 	ShapeRenderer shapeRenderer;
@@ -51,18 +59,21 @@ public class RunFoxRun extends ApplicationAdapter {
 	jAnimator foxrun;
 	jAnimator foxjump;
 	
-	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();	//Background objects
-	ArrayList<jLiveActor> liveItems = new ArrayList<jLiveActor>();
-	jBackground[] grounds = new jBackground[2];
-    SpriteBatch   spriteBatch;
+	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();			//Background objects, non-interactive
+	ArrayList<jLiveActor> liveItems = new ArrayList<jLiveActor>();			//Interactive items
+	ArrayList<jBackground> grounds = new ArrayList<jBackground>();			//Ground tiles, non-interactive
+
+    SpriteBatch spriteBatch;
     TextureRegion currentFrame;
     Rectangle foxBounds = new Rectangle(0,0,BOUNDWIDTH,BOUNDHEIGHT);		//Create the fox bounds.
     
-    private float upSpeedVal;
-    private boolean upSpeedOk = false;
+    
+
 	
 	@Override
 	public void create () {
+		this.gw = Gdx.graphics.getWidth();			//Get graphics width.
+		this.gh = Gdx.graphics.getHeight();		//Get graphics height.
 		
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
@@ -71,7 +82,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		//Create and setup the camera.
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false,800,600);
+		camera.setToOrtho(false,this.gw,this.gh);
 		
 		//Create running fox animation.
 		foxrun = new jAnimator(new Texture("run_fox_sheet.png"),12,1,true,false,.05f);
@@ -99,9 +110,10 @@ public class RunFoxRun extends ApplicationAdapter {
 	}
 	
 	private void updateWorld() {
-		// TODO Auto-generated method stub
+		
 		deltaTime = Gdx.graphics.getDeltaTime();
         stateTime += deltaTime;
+        
         //Check for input
         if(Gdx.input.justTouched() && foxPosition.y <= FOX_START_Y) {
         	foxVelocity.set(0, FOX_JUMP_IMPULSE);
@@ -136,14 +148,13 @@ public class RunFoxRun extends ApplicationAdapter {
         	if (foxBounds.overlaps(la.getBounds()) && la.isReSpawn()) {
         		this.coinCount += 1;
         		this.upSpeedOk = true;
-        		this.upSpeedVal = .07f;
 				int min = (int)la.getImageWidth();
 				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
         	} else if (la.getWidthXCoord() < 0 && la.isReSpawn()) {
 				int min = (int)la.getImageWidth();
 				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
 			}
-        	if (this.upSpeedOk) { la.addToMultiplier(upSpeedVal); }
+        	if (this.upSpeedOk) { la.addToMultiplier(UPSPEEDVAL); }
         }
         
         //Move the fox.
@@ -152,34 +163,36 @@ public class RunFoxRun extends ApplicationAdapter {
         //Be sure all background items are sorted by level.
         Collections.sort(bgitems, new jBackground());
         
-        //Update ground texture so always on screen
-        if (this.upSpeedOk) {
-        	grounds[0].addToMultiplier(upSpeedVal);
-        	grounds[1].addToMultiplier(upSpeedVal);
-        }
-        grounds[0].updateBackgroundX(deltaTime);
-        grounds[1].updateBackgroundX(deltaTime);
-        if(grounds[0].getWidthXCoord() <= 0) {
-        	grounds[0].setxCoord(grounds[1].getWidthXCoord());
-        }
-        if(grounds[1].getWidthXCoord() <= 0) {
-        	grounds[1].setxCoord(grounds[0].getWidthXCoord());
+        //Update scrolling ground tiles
+        maxGroundTile = 0f;
+        for(jBackground jb : grounds) {
+        	jb.updateBackgroundX(deltaTime);
+        	if (this.upSpeedOk) { jb.addToMultiplier(UPSPEEDVAL); }
+        	if(jb.getWidthXCoord() > maxGroundTile) { maxGroundTile = jb.getWidthXCoord(); }
         }
         
+        //Ensure any ground tiles off screen are repositioned for viewing.
+        for(jBackground jb : grounds) {
+        	if(jb.getWidthXCoord() <= 0) {
+        		jb.setxCoord(maxGroundTile);
+        		break;
+        	}
+        }
         
 		//Update background item
 		for(jBackground jb : bgitems) {
 			jb.updateBackgroundX(deltaTime);
-			if (this.upSpeedOk) { jb.addToMultiplier(upSpeedVal); }
+			if (this.upSpeedOk) { jb.addToMultiplier(UPSPEEDVAL); }
 			if (jb.getWidthXCoord() < 0 && jb.isReSpawn()) {
 				int min = jb.getImageWidth();
-				jb.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
+				jb.setxCoord(this.gw + rand.nextInt(min+50));
 			} 
 		}
 		
-		if (this.upSpeedOk) { this.speedMultiplier += upSpeedVal; }
+		//Set new speed multiplier and use to calculate distance ran.
+		if (this.upSpeedOk) { speedMultiplier += UPSPEEDVAL; }
 		this.upSpeedOk = false;
-		this.distanceRan += deltaTime * speedMultiplier * .1;
+		this.distanceRan += deltaTime * speedMultiplier * .12;
 	}
 
 	private void drawWorld() {
@@ -233,17 +246,19 @@ public class RunFoxRun extends ApplicationAdapter {
 		bgitems.add(new jBackground(jAssets.getTexture("bush1"),new Vector2(600,30),1,true));
 		bgitems.add(new jBackground(jAssets.getTexture("farpines"), new Vector2(400, -75), 100, .035f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(400,30),3,.85f,true));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(234,30),4,.75f,true,.65f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(234,FOX_START_Y),4,.75f,true,.65f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(455,30),4,.85f,true,.60f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(502,30),4,.65f,true,.75f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(600,30),4,.55f,true,.85f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(600,FOX_START_Y),4,.55f,true,.85f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(100,30),4,.95f,true,.95f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(200,30),4,1,true,1.2f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(200,FOX_START_Y),4,1,true,1.2f));
 		
-		grounds[0] = new jBackground(jAssets.getTexture("ground1"),new Vector2(0,0),0,true);
-		grounds[1] = new jBackground(jAssets.getTexture("ground1"),new Vector2(grounds[0].getWidthXCoord(),0),0,true);
+		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(0,0),0,true));
+		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(jAssets.getTexture("ground1").getWidth(),0),0,true));
+		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(jAssets.getTexture("ground1").getWidth()*2,0),0,true));
 		
-		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(400,60), 1, true, .80f));
+		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(400,GROUNDLEVEL), 1, true, .80f));
+		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(600,GROUNDLEVEL), 1, true, .80f, true));
 		
 	}
 	static enum FoxState {

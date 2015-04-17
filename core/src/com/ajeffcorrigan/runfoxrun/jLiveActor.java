@@ -15,11 +15,7 @@ public class jLiveActor{
 	private Rectangle itemBounds;
 	public String bgName;
 	private float speedMultiplier;
-	
-	
-	public jLiveActor() {
-		// TODO Auto-generated constructor stub
-	}
+	private boolean deadly;					//Is item considered deadly.
 	
 	public jLiveActor(Texture p_img) {
 		this.itemImg = p_img;
@@ -29,6 +25,7 @@ public class jLiveActor{
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
 		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+		this.deadly = false;
 	}
 	
 	public jLiveActor(Texture p_img, Vector2 p_pos) {
@@ -39,6 +36,7 @@ public class jLiveActor{
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
 		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+		this.deadly = false;
 	}
 	
 	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed) {
@@ -49,6 +47,7 @@ public class jLiveActor{
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
 		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+		this.deadly = false;
 	}
 	
 	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed, boolean p_respawn) {
@@ -59,6 +58,7 @@ public class jLiveActor{
 		this.imgHeight = this.itemImg.getHeight();
 		this.imgWidth = this.itemImg.getWidth();
 		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+		this.deadly = false;
 	}
 	
 	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed, boolean p_respawn, float p_imgscale) {
@@ -69,6 +69,18 @@ public class jLiveActor{
 		this.imgHeight = this.itemImg.getHeight() * p_imgscale;
 		this.imgWidth = this.itemImg.getWidth() * p_imgscale;
 		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+		this.deadly = false;
+	}
+	
+	public jLiveActor(Texture p_img, Vector2 p_pos, float p_speed, boolean p_respawn, float p_imgscale, boolean p_deadly) {
+		this.itemImg = p_img;
+		this.actorPos = new Vector2(p_pos);
+		this.speedMultiplier = p_speed;
+		this.reSpawn = p_respawn;
+		this.imgHeight = this.itemImg.getHeight() * p_imgscale;
+		this.imgWidth = this.itemImg.getWidth() * p_imgscale;
+		this.itemBounds = new Rectangle(this.actorPos.x, this.actorPos.y, this.imgWidth, this.imgHeight);
+		this.deadly = p_deadly;
 	}
 
 	public float getImageWidth() {
@@ -113,6 +125,9 @@ public class jLiveActor{
 		this.speedMultiplier += upSpd;
 	}
 	
+	public boolean isDeadly() {
+		return this.deadly;
+	}
 	
 
 }
