@@ -145,14 +145,18 @@ public class RunFoxRun extends ApplicationAdapter {
         
         for(jLiveActor la : liveItems) {
         	la.updateLiveActorX(deltaTime);
-        	if (foxBounds.overlaps(la.getBounds()) && la.isReSpawn()) {
-        		this.coinCount += 1;
-        		this.upSpeedOk = true;
+        	if (foxBounds.overlaps(la.getBounds())) { 
+        		if (la.isReSpawn() && !la.isDeadly()) {
+        			this.coinCount += 1;
+        			this.upSpeedOk = false;
+        			int min = (int)la.getImageWidth();
+        			la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+(int)gw));
+        		} else if (la.isDeadly()) {
+        			this.coinCount += 1;
+        		}
+			} else if (la.getWidthXCoord() < 0 && la.isReSpawn()) {
 				int min = (int)la.getImageWidth();
-				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
-        	} else if (la.getWidthXCoord() < 0 && la.isReSpawn()) {
-				int min = (int)la.getImageWidth();
-				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+50));
+				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+(int)gw));
 			}
         	if (this.upSpeedOk) { la.addToMultiplier(UPSPEEDVAL); }
         }
@@ -258,7 +262,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(jAssets.getTexture("ground1").getWidth()*2,0),0,true));
 		
 		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(400,GROUNDLEVEL), 1, true, .80f));
-		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(600,GROUNDLEVEL), 1, true, .80f, true));
+		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(gw,GROUNDLEVEL), 1, true, .95f, true));
 		
 	}
 	static enum FoxState {
