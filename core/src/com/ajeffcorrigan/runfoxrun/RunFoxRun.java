@@ -45,6 +45,8 @@ public class RunFoxRun extends ApplicationAdapter {
 	private float gh;									//Game height
 	private boolean upSpeedOk = false;					//Flag to indicate speed up should occur.
     private float maxGroundTile;						//Last ground tile x coordinate.
+    
+	GameState gamestate = GameState.title;
 	
 	private BitmapFont font;
 	ShapeRenderer shapeRenderer;
@@ -72,10 +74,10 @@ public class RunFoxRun extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
-		this.gw = Gdx.graphics.getWidth();			//Get graphics width.
-		this.gh = Gdx.graphics.getHeight();		//Get graphics height.
+		this.gw = Gdx.graphics.getWidth();				//Get graphics width.
+		this.gh = Gdx.graphics.getHeight();				//Get graphics height.
 		
-		shapeRenderer = new ShapeRenderer();
+		shapeRenderer = new ShapeRenderer();			//Debugging shape renderer.
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
@@ -93,7 +95,7 @@ public class RunFoxRun extends ApplicationAdapter {
         foxPosition.set(FOX_START_X,FOX_START_Y);
         foxVelocity.set(0,0);
         gravity.set(0, GRAVITY);
-		
+        
 	}
 
 	@Override
@@ -271,6 +273,10 @@ public class RunFoxRun extends ApplicationAdapter {
 	
 	private float gameSpeed() {
 		return GAME_SPEED * speedMultiplier; 
+	}
+	
+	static enum GameState {
+		title, activegame, pausegame, endgame
 	}
 	
 }
