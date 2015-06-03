@@ -9,7 +9,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -55,7 +54,8 @@ public class RunFoxRun extends ApplicationAdapter {
 	Vector2 foxVelocity = new Vector2();
 	Vector2 foxPosition = new Vector2();
 	Vector2 gravity = new Vector2();
-	FoxState foxstate = FoxState.run;				
+	FoxState foxstate = FoxState.run;
+	GameState gamestate = GameState.title;				//Set initial state of game, which is title, for now.
 
 	// jAnimator class for the running fox.
 	jAnimator foxrun;
@@ -92,7 +92,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		
         stateTime = 0f;
         
-        foxPosition.set(FOX_START_X,FOX_START_Y);
+        foxPosition.set(FOX_START_X,FOX_START_Y+1);					//Offset Y by 1 to ignore first touch event.
         foxVelocity.set(0,0);
         gravity.set(0, GRAVITY);
         
@@ -106,16 +106,29 @@ public class RunFoxRun extends ApplicationAdapter {
 			loadAssets();
 			if(assetsInit) { createWorld(); }
 		} else {
-			updateWorld();
-			drawWorld();
+			deltaTime = Gdx.graphics.getDeltaTime();
+	        stateTime += deltaTime; 
+			if(gamestate == GameState.title) { 
+				titleScreen(); 
+				drawWorld();
+			}
+			if(gamestate == GameState.running) { 
+				updateWorld();
+				drawWorld();
+			}
+			
 		}
 	}
 	
+	private void titleScreen() {
+		currentFrame = foxrun.getCurrentFrame(0);
+		if(Gdx.input.justTouched()) {
+			gamestate = GameState.running;
+		}
+	}
+
 	private void updateWorld() {
-		
-		deltaTime = Gdx.graphics.getDeltaTime();
-        stateTime += deltaTime;
-        
+		       
         //Check for input
         if(Gdx.input.justTouched() && foxPosition.y <= FOX_START_Y) {
         	foxVelocity.set(0, FOX_JUMP_IMPULSE);
@@ -221,18 +234,19 @@ public class RunFoxRun extends ApplicationAdapter {
 		//Draw fox actor.
         batch.begin();
         batch.draw(currentFrame, foxPosition.x, foxPosition.y);
-        font.draw(batch, "Coins: "+this.coinCount, 20, Gdx.graphics.getHeight()-30);
-        font.draw(batch, "Distance Ran: " + (int)this.distanceRan, 20, Gdx.graphics.getHeight()-50);
+        font.draw(batch, "Coins: "+this.coinCount, 20, gh - 30);
+        font.draw(batch, "Distance Ran: " + (int)this.distanceRan, 20, gh - 50);
         batch.end();
         
         //Debug collision        
-        shapeRenderer.begin(ShapeType.Line);
-        shapeRenderer.setColor(Color.BLACK);
-        shapeRenderer.rect(foxBounds.x, foxBounds.y, foxBounds.width, foxBounds.height);
-        for(jLiveActor la : liveItems) {
-        	shapeRenderer.rect(la.getBounds().x, la.getBounds().y, la.getBounds().width, la.getBounds().height);
-        } 
-        shapeRenderer.end();
+        /* shapeRenderer.begin(ShapeType.Line);
+        *shapeRenderer.setColor(Color.BLACK);
+        *shapeRenderer.rect(foxBounds.x, foxBounds.y, foxBounds.width, foxBounds.height);
+        *for(jLiveActor la : liveItems) {
+        *	shapeRenderer.rect(la.getBounds().x, la.getBounds().y, la.getBounds().width, la.getBounds().height);
+        *} 
+        *shapeRenderer.end();
+        */
         
         
 	}
@@ -269,6 +283,10 @@ public class RunFoxRun extends ApplicationAdapter {
 	}
 	static enum FoxState {
 		run, jump
+	}
+	
+	static enum GameState {
+		start, running, dead, title
 	}
 	
 	private float gameSpeed() {
