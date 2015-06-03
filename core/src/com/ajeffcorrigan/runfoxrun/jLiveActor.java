@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class jLiveActor{
 	
-	private Texture itemImg;	//Texture to load as image.
+	private Texture itemImg;				//Texture to load as image.
 	private Vector2 actorPos;		
 	private boolean reSpawn;
 	private float imgHeight;

@@ -45,8 +45,6 @@ public class RunFoxRun extends ApplicationAdapter {
 	private boolean upSpeedOk = false;					//Flag to indicate speed up should occur.
     private float maxGroundTile;						//Last ground tile x coordinate.
     
-	GameState gamestate = GameState.title;
-	
 	private BitmapFont font;
 	ShapeRenderer shapeRenderer;
 	SpriteBatch batch;
@@ -112,7 +110,7 @@ public class RunFoxRun extends ApplicationAdapter {
 				titleScreen(); 
 				drawWorld();
 			}
-			if(gamestate == GameState.running) { 
+			if(gamestate == GameState.activegame) { 
 				updateWorld();
 				drawWorld();
 			}
@@ -123,7 +121,7 @@ public class RunFoxRun extends ApplicationAdapter {
 	private void titleScreen() {
 		currentFrame = foxrun.getCurrentFrame(0);
 		if(Gdx.input.justTouched()) {
-			gamestate = GameState.running;
+			gamestate = GameState.activegame;
 		}
 	}
 
@@ -283,10 +281,6 @@ public class RunFoxRun extends ApplicationAdapter {
 	}
 	static enum FoxState {
 		run, jump
-	}
-	
-	static enum GameState {
-		start, running, dead, title
 	}
 	
 	private float gameSpeed() {
