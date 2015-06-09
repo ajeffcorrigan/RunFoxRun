@@ -5,23 +5,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public class jBackground implements Comparator<jBackground>{
+public class jBackground extends ScreenObjectContainer implements Comparator<jBackground> {
 	
-	private Texture bgimage;	//Texture to load as image.
 	private int bglevel;
-	private Vector2 bgPos;
-	private boolean reSpawn;
-	private float imgHeight;
-	private float imgWidth;
-	public String bgName;
-	private float speedMultiplier;
 
 	public jBackground() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	public jBackground(Texture p_img) {
-		this.bgimage = p_img;
+		super.setItemImg(p_img);
 		this.bglevel = 0;
 		this.bgPos = new Vector2(0,0);
 		this.speedMultiplier = 1;
@@ -31,7 +24,7 @@ public class jBackground implements Comparator<jBackground>{
 	}
 	
 	public jBackground(Texture p_img, int p_level) {
-		this.bgimage = p_img;
+		super.setItemImg(p_img);
 		this.bglevel = p_level;
 		this.bgPos = new Vector2(0,0);
 		this.speedMultiplier = 1;
@@ -42,7 +35,7 @@ public class jBackground implements Comparator<jBackground>{
 
 	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, float p_speed) {
 		// TODO Auto-generated constructor stub
-		this.bgimage = p_img;
+		super.setItemImg(p_img);
 		this.bglevel = p_bglev;
 		this.bgPos = new Vector2(p_pos);
 		this.speedMultiplier = p_speed;
@@ -52,7 +45,7 @@ public class jBackground implements Comparator<jBackground>{
 	
 	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, float p_speed, boolean p_respawn) {
 		// TODO Auto-generated constructor stub
-		this.bgimage = p_img;
+		super.setItemImg(p_img);
 		this.bglevel = p_bglev;
 		this.bgPos = new Vector2(p_pos);
 		this.speedMultiplier = p_speed;
@@ -63,7 +56,7 @@ public class jBackground implements Comparator<jBackground>{
 	
 	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, boolean p_respawn) {
 		// TODO Auto-generated constructor stub
-		this.bgimage = p_img;
+		super.setItemImg(p_img);
 		this.bglevel = p_bglev;
 		this.bgPos = new Vector2(p_pos);
 		this.speedMultiplier = 1;
@@ -75,7 +68,7 @@ public class jBackground implements Comparator<jBackground>{
 	
 	public jBackground(Texture p_img, Vector2 p_pos, int p_bglev, float p_speed, boolean p_respawn, float p_scale) {
 		// TODO Auto-generated constructor stub
-		this.bgimage = p_img;
+		super.setItemImg(p_img);
 		this.bglevel = p_bglev;
 		this.bgPos = new Vector2(p_pos);
 		this.speedMultiplier = p_speed;
@@ -86,9 +79,6 @@ public class jBackground implements Comparator<jBackground>{
 	
 	public void updateBackgroundX(float dtime) {
 		this.bgPos.x += (dtime * (RunFoxRun.GAME_SPEED * this.speedMultiplier)); 
-	}
-	public Texture getBgimage() { 
-		return bgimage; 
 	}
 	public float getxCoord() { 
 		return this.bgPos.x; 
