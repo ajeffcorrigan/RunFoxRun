@@ -1,6 +1,7 @@
 package com.ajeffcorrigan.runfoxrun;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -15,6 +16,10 @@ public class ScreenObjectContainer {
 	private Rectangle itemBounds;				//Item bounds for collision and debugging.
 	
 	public String itemName;						//Name of the item.
+	
+	public ScreenObjectContainer() {
+		
+	}
 	
 	public ScreenObjectContainer(Texture p_img) {
 		// TODO Auto-generated constructor stub
@@ -59,6 +64,7 @@ public class ScreenObjectContainer {
 	 */
 	protected void setItemPos(Vector2 itemPos) {
 		this.itemPos = itemPos;
+		this.updateBounds();
 	}
 
 	/**
@@ -143,6 +149,44 @@ public class ScreenObjectContainer {
 	 */
 	protected void setItemName(String itemName) {
 		this.itemName = itemName;
+	}
+	
+	public void updateItemX(float dtime) {
+		this.itemPos.x += (dtime * (RunFoxRun.GAME_SPEED * this.speedMultiplier));
+		this.updateBounds();
+	}
+	
+	private void updateBounds() {
+		this.itemBounds.setPosition(itemPos);
+	}
+	
+	public void draw(SpriteBatch sb) {
+		sb.draw(this.itemImg, this.itemPos.x, this.itemPos.y, this.imgWidth, this.imgHeight);
+		
+	}
+	
+	public void addToMultiplier(float upSpd) {
+		this.speedMultiplier += upSpd;
+	}
+	
+	public float getxCoord() { 
+		return this.itemPos.x;
+	}
+	
+	public void setxCoord(float i) {
+		this.setItemPos(new Vector2(i,this.itemPos.y));
+	}
+	
+	public float getyCoord() {
+		return this.itemPos.y;
+	}
+	
+	public float getWidthXCoord() {
+		return this.imgWidth + this.itemPos.x;
+	}
+	
+	public float getHeightYCoord() {
+		return this.imgHeight + this.itemPos.y;
 	}
 
 }

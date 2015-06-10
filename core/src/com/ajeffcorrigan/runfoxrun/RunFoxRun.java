@@ -32,6 +32,7 @@ public class RunFoxRun extends ApplicationAdapter {
 	private static final float BOUNDWIDTH = 75;			//Fox bound width
 	private static final float UPSPEEDVAL = 0.06f;		//Speed up value.
 	private static final float GROUNDLEVEL = 60; 		//Actual ground level.
+	public static final boolean DEBUGON = true;			//Is debug enabled.
 	
 	private float speedMultiplier = 1;					//Speed multiplier	
 	private boolean assetsInit = false;					//Checks if assets have loaded. 
@@ -44,9 +45,10 @@ public class RunFoxRun extends ApplicationAdapter {
 	private float gh;									//Game height
 	private boolean upSpeedOk = false;					//Flag to indicate speed up should occur.
     private float maxGroundTile;						//Last ground tile x coordinate.
+    private ShapeRenderer shaperenderer;				//Shape renderer used in debugging.
     
 	private BitmapFont font;
-	ShapeRenderer shapeRenderer;
+	
 	SpriteBatch batch;
 	OrthographicCamera camera;
 	Vector2 foxVelocity = new Vector2();
@@ -60,25 +62,22 @@ public class RunFoxRun extends ApplicationAdapter {
 	jAnimator foxjump;
 	
 	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();			//Background objects, non-interactive
-	ArrayList<jLiveActor> liveItems = new ArrayList<jLiveActor>();			//Interactive items
+	ArrayList<jStaticActor> staticItems = new ArrayList<jStaticActor>();			//Interactive items
 	ArrayList<jBackground> grounds = new ArrayList<jBackground>();			//Ground tiles, non-interactive
 
     SpriteBatch spriteBatch;
     TextureRegion currentFrame;
-    Rectangle foxBounds = new Rectangle(0,0,BOUNDWIDTH,BOUNDHEIGHT);		//Create the fox bounds.
-    
-    
-
+    Rectangle foxBounds = new Rectangle(0,0,BOUNDWIDTH,BOUNDHEIGHT);		//Create the fox bounds. 
 	
 	@Override
 	public void create () {
 		this.gw = Gdx.graphics.getWidth();				//Get graphics width.
 		this.gh = Gdx.graphics.getHeight();				//Get graphics height.
 		
-		shapeRenderer = new ShapeRenderer();			//Debugging shape renderer.
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
+		shaperenderer = new ShapeRenderer();
 		
 		//Create and setup the camera.
 		camera = new OrthographicCamera();
@@ -156,22 +155,22 @@ public class RunFoxRun extends ApplicationAdapter {
         //Update the fox bounds.
         foxBounds.setPosition(foxPosition.x + BOUNDXOFFSET, foxPosition.y + BOUNDYOFFSET);
         
-        for(jLiveActor la : liveItems) {
-        	la.updateLiveActorX(deltaTime);
-        	if (foxBounds.overlaps(la.getBounds())) { 
-        		if (la.isReSpawn() && !la.isDeadly()) {
+        for(jStaticActor sa : staticItems) {
+        	sa.updActorX(deltaTime);
+        	if (foxBounds.overlaps(sa.getItemBounds())) { 
+        		if (sa.isReSpawn() && !sa.isDeadly()) {
         			this.coinCount += 1;
         			this.upSpeedOk = false;
-        			int min = (int)la.getImageWidth();
-        			la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+(int)gw));
-        		} else if (la.isDeadly()) {
+        			int min = (int)sa.getImgWidth();
+        			sa.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+(int)gw));
+        		} else if (sa.isDeadly()) {
         			this.coinCount += 1;
         		}
-			} else if (la.getWidthXCoord() < 0 && la.isReSpawn()) {
-				int min = (int)la.getImageWidth();
-				la.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+(int)gw));
+			} else if (sa.getWidthXCoord() < 0 && sa.isReSpawn()) {
+				int min = (int)sa.getImgWidth();
+				sa.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+(int)gw));
 			}
-        	if (this.upSpeedOk) { la.addToMultiplier(UPSPEEDVAL); }
+        	if (this.upSpeedOk) { sa.addToMultiplier(UPSPEEDVAL); }
         }
         
         //Move the fox.
@@ -201,7 +200,7 @@ public class RunFoxRun extends ApplicationAdapter {
 			jb.updateBackgroundX(deltaTime);
 			if (this.upSpeedOk) { jb.addToMultiplier(UPSPEEDVAL); }
 			if (jb.getWidthXCoord() < 0 && jb.isReSpawn()) {
-				int min = jb.getImageWidth();
+				int min = (int) jb.getImgWidth();
 				jb.setxCoord(this.gw + rand.nextInt(min+50));
 			} 
 		}
@@ -226,7 +225,7 @@ public class RunFoxRun extends ApplicationAdapter {
 		
 		//Draw live objects
 		batch.begin();
-		for(jLiveActor la : liveItems) { la.draw(batch); } 
+		for(jStaticActor sa : staticItems) { sa.draw(batch); } 
 		batch.end();
 						
 		//Draw fox actor.
@@ -236,16 +235,17 @@ public class RunFoxRun extends ApplicationAdapter {
         font.draw(batch, "Distance Ran: " + (int)this.distanceRan, 20, gh - 50);
         batch.end();
         
-        //Debug collision        
-        /* shapeRenderer.begin(ShapeType.Line);
-        *shapeRenderer.setColor(Color.BLACK);
-        *shapeRenderer.rect(foxBounds.x, foxBounds.y, foxBounds.width, foxBounds.height);
-        *for(jLiveActor la : liveItems) {
-        *	shapeRenderer.rect(la.getBounds().x, la.getBounds().y, la.getBounds().width, la.getBounds().height);
-        *} 
-        *shapeRenderer.end();
-        */
-        
+        if(DEBUGON) {
+        	shaperenderer.begin(ShapeType.Line);
+            shaperenderer.setColor(Color.BLACK);
+            //for(jBackground jb : bgitems) { 
+            //	shaperenderer.rect(jb.getItemBounds().x, jb.getItemBounds().y, jb.getItemBounds().width, jb.getItemBounds().height);
+            //}
+            for(jStaticActor sa : staticItems) {
+            	shaperenderer.rect(sa.getItemBounds().x, sa.getItemBounds().y, sa.getItemBounds().width, sa.getItemBounds().height);
+            } 
+            shaperenderer.end();
+        }
         
 	}
 	
@@ -275,8 +275,8 @@ public class RunFoxRun extends ApplicationAdapter {
 		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(jAssets.getTexture("ground1").getWidth(),0),0,true));
 		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(jAssets.getTexture("ground1").getWidth()*2,0),0,true));
 		
-		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(400,GROUNDLEVEL), 1, true, .80f));
-		liveItems.add(new jLiveActor(jAssets.getTexture("coin"),new Vector2(gw,GROUNDLEVEL), 1, true, .95f, true));
+		staticItems.add(new jStaticActor(jAssets.getTexture("coin"),new Vector2(400,GROUNDLEVEL), 1, true, .80f));
+		staticItems.add(new jStaticActor(jAssets.getTexture("coin"),new Vector2(gw,GROUNDLEVEL), 1, true, .95f, true));
 		
 	}
 	static enum FoxState {
