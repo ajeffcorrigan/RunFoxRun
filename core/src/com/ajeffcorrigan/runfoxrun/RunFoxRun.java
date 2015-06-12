@@ -23,11 +23,12 @@ public class RunFoxRun extends ApplicationAdapter {
 	//Game constants
 	private static final float FOX_JUMP_IMPULSE = 350;	//Jump impulse
 	private static final float GRAVITY = -10;			//Gravity force
+	private static final Vector2 FOX_START = new Vector2(75,40);
 	private static final float FOX_START_Y = 40;		//Fox starting y coordinate
 	private static final float FOX_START_X = 75;		//Fox starting x coordinate
 	public static final float GAME_SPEED = -200f;		//Base game speed
-	private static final float BOUNDXOFFSET = 60;		//Fox bound x coordinate offset
-	private static final float BOUNDYOFFSET = 20;		//Fox bound y coordinate offset
+	private static final Vector2 BOUNDOFFSET = new Vector2(60,20);
+	private static final Vector2 BOUNDSIZE = new Vector2(50,70);
 	private static final float BOUNDHEIGHT = 50;		//Fox bound height
 	private static final float BOUNDWIDTH = 75;			//Fox bound width
 	private static final float UPSPEEDVAL = 0.06f;		//Speed up value.
@@ -51,8 +52,6 @@ public class RunFoxRun extends ApplicationAdapter {
 	
 	SpriteBatch batch;
 	OrthographicCamera camera;
-	Vector2 foxVelocity = new Vector2();
-	Vector2 foxPosition = new Vector2();
 	Vector2 gravity = new Vector2();
 	FoxState foxstate = FoxState.run;
 	GameState gamestate = GameState.title;				//Set initial state of game, which is title, for now.
@@ -61,13 +60,14 @@ public class RunFoxRun extends ApplicationAdapter {
 	jAnimator foxrun;
 	jAnimator foxjump;
 	
-	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();			//Background objects, non-interactive
+	ArrayList<jBackground> bgitems = new ArrayList<jBackground>();					//Background objects, non-interactive
 	ArrayList<jStaticActor> staticItems = new ArrayList<jStaticActor>();			//Interactive items
-	ArrayList<jBackground> grounds = new ArrayList<jBackground>();			//Ground tiles, non-interactive
+	ArrayList<jBackground> grounds = new ArrayList<jBackground>();					//Ground tiles, non-interactive
+	
+	jLiveActor foxActor;
 
     SpriteBatch spriteBatch;
     TextureRegion currentFrame;
-    Rectangle foxBounds = new Rectangle(0,0,BOUNDWIDTH,BOUNDHEIGHT);		//Create the fox bounds. 
 	
 	@Override
 	public void create () {
@@ -89,8 +89,8 @@ public class RunFoxRun extends ApplicationAdapter {
 		
         stateTime = 0f;
         
-        foxPosition.set(FOX_START_X,FOX_START_Y+1);					//Offset Y by 1 to ignore first touch event.
-        foxVelocity.set(0,0);
+        foxActor = new jLiveActor(FOX_START.add(0, 1),BOUNDSIZE);
+        foxActor.setBoundOffset(BOUNDOFFSET);
         gravity.set(0, GRAVITY);
         
 	}
@@ -127,8 +127,8 @@ public class RunFoxRun extends ApplicationAdapter {
 	private void updateWorld() {
 		       
         //Check for input
-        if(Gdx.input.justTouched() && foxPosition.y <= FOX_START_Y) {
-        	foxVelocity.set(0, FOX_JUMP_IMPULSE);
+        if(Gdx.input.justTouched() && foxActor.getActorPos().y <= FOX_START_Y) {
+        	foxActor.setActorVelocityY(FOX_JUMP_IMPULSE);
         	foxjump.setStateTime(stateTime);
         	foxjump.setAnimationProgress(true);
         	currentFrame = foxjump.getCurrentFrame(stateTime); 
@@ -143,21 +143,18 @@ public class RunFoxRun extends ApplicationAdapter {
         }
         
         //Jumping mechanism
-        if(foxPosition.y < FOX_START_Y && foxVelocity.y <= 0) { 
-        	foxPosition.y = FOX_START_Y;
-        	foxVelocity.y = 0;
+        if(foxActor.getActorPos().y < FOX_START_Y && foxActor.getActorVelocity().y <= 0) { 
+        	foxActor.setActorPos(FOX_START);
+        	foxActor.setActorVelocityY(0);
         	foxstate = FoxState.run;
         	foxjump.setAnimationProgress(false);
         } else {
-        	foxVelocity.add(gravity);
-        }
-        
-        //Update the fox bounds.
-        foxBounds.setPosition(foxPosition.x + BOUNDXOFFSET, foxPosition.y + BOUNDYOFFSET);
+        	foxActor.addToVelocity(gravity);
+        }    
         
         for(jStaticActor sa : staticItems) {
         	sa.updActorX(deltaTime);
-        	if (foxBounds.overlaps(sa.getItemBounds())) { 
+        	if (foxActor.getActorBounds().overlaps(sa.getItemBounds())) { 
         		if (sa.isReSpawn() && !sa.isDeadly()) {
         			this.coinCount += 1;
         			this.upSpeedOk = false;
@@ -174,7 +171,7 @@ public class RunFoxRun extends ApplicationAdapter {
         }
         
         //Move the fox.
-        foxPosition.mulAdd(foxVelocity, deltaTime);
+        foxActor.moveActor(deltaTime);
         
         //Be sure all background items are sorted by level.
         Collections.sort(bgitems, new jBackground());
@@ -230,7 +227,7 @@ public class RunFoxRun extends ApplicationAdapter {
 						
 		//Draw fox actor.
         batch.begin();
-        batch.draw(currentFrame, foxPosition.x, foxPosition.y);
+        batch.draw(currentFrame, foxActor.getActorPos().x, foxActor.getActorPos().y);
         font.draw(batch, "Coins: "+this.coinCount, 20, gh - 30);
         font.draw(batch, "Distance Ran: " + (int)this.distanceRan, 20, gh - 50);
         batch.end();
