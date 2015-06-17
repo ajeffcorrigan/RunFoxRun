@@ -24,13 +24,9 @@ public class RunFoxRun extends ApplicationAdapter {
 	private static final float FOX_JUMP_IMPULSE = 350;	//Jump impulse
 	private static final float GRAVITY = -10;			//Gravity force
 	private static final Vector2 FOX_START = new Vector2(75,40);
-	private static final float FOX_START_Y = 40;		//Fox starting y coordinate
-	private static final float FOX_START_X = 75;		//Fox starting x coordinate
-	public static final float GAME_SPEED = -200f;		//Base game speed
+	public static final float GAME_SPEED = -300f;		//Base game speed
 	private static final Vector2 BOUNDOFFSET = new Vector2(60,20);
-	private static final Vector2 BOUNDSIZE = new Vector2(50,70);
-	private static final float BOUNDHEIGHT = 50;		//Fox bound height
-	private static final float BOUNDWIDTH = 75;			//Fox bound width
+	private static final Vector2 BOUNDSIZE = new Vector2(70,50);
 	private static final float UPSPEEDVAL = 0.06f;		//Speed up value.
 	private static final float GROUNDLEVEL = 60; 		//Actual ground level.
 	public static final boolean DEBUGON = true;			//Is debug enabled.
@@ -89,11 +85,12 @@ public class RunFoxRun extends ApplicationAdapter {
 		
         stateTime = 0f;
         
-        foxActor = new jLiveActor(FOX_START.add(0, 1),BOUNDSIZE);
+        foxActor = new jLiveActor(new Vector2(FOX_START.x, FOX_START.y + .2f),BOUNDSIZE);
         foxActor.setBoundOffset(BOUNDOFFSET);
         gravity.set(0, GRAVITY);
         
 	}
+
 
 	@Override
 	public void render () {
@@ -113,7 +110,9 @@ public class RunFoxRun extends ApplicationAdapter {
 				updateWorld();
 				drawWorld();
 			}
-			
+			if(gamestate == GameState.endgame) {
+				drawWorld();
+			}		
 		}
 	}
 	
@@ -127,7 +126,7 @@ public class RunFoxRun extends ApplicationAdapter {
 	private void updateWorld() {
 		       
         //Check for input
-        if(Gdx.input.justTouched() && foxActor.getActorPos().y <= FOX_START_Y) {
+        if(Gdx.input.justTouched() && foxActor.getActorPos().y <= FOX_START.y) {
         	foxActor.setActorVelocityY(FOX_JUMP_IMPULSE);
         	foxjump.setStateTime(stateTime);
         	foxjump.setAnimationProgress(true);
@@ -143,8 +142,8 @@ public class RunFoxRun extends ApplicationAdapter {
         }
         
         //Jumping mechanism
-        if(foxActor.getActorPos().y < FOX_START_Y && foxActor.getActorVelocity().y <= 0) { 
-        	foxActor.setActorPos(FOX_START);
+        if(foxActor.getActorPos().y < FOX_START.y && foxActor.getActorVelocity().y <= 0) { 
+        	foxActor.setActorPosY(FOX_START.y);
         	foxActor.setActorVelocityY(0);
         	foxstate = FoxState.run;
         	foxjump.setAnimationProgress(false);
@@ -161,7 +160,7 @@ public class RunFoxRun extends ApplicationAdapter {
         			int min = (int)sa.getImgWidth();
         			sa.setxCoord(Gdx.graphics.getWidth() + rand.nextInt(min+(int)gw));
         		} else if (sa.isDeadly()) {
-        			this.coinCount += 1;
+        			gamestate = GameState.endgame;
         		}
 			} else if (sa.getWidthXCoord() < 0 && sa.isReSpawn()) {
 				int min = (int)sa.getImgWidth();
@@ -235,6 +234,7 @@ public class RunFoxRun extends ApplicationAdapter {
         if(DEBUGON) {
         	shaperenderer.begin(ShapeType.Line);
             shaperenderer.setColor(Color.BLACK);
+            shaperenderer.rect(foxActor.getActorBounds().x, foxActor.getActorBounds().y, foxActor.getActorBounds().width, foxActor.getActorBounds().height);
             //for(jBackground jb : bgitems) { 
             //	shaperenderer.rect(jb.getItemBounds().x, jb.getItemBounds().y, jb.getItemBounds().width, jb.getItemBounds().height);
             //}
@@ -261,12 +261,12 @@ public class RunFoxRun extends ApplicationAdapter {
 		bgitems.add(new jBackground(jAssets.getTexture("bush1"),new Vector2(600,30),1,true));
 		bgitems.add(new jBackground(jAssets.getTexture("farpines"), new Vector2(400, -75), 100, .035f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(400,30),3,.85f,true));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(234,FOX_START_Y),4,.75f,true,.65f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(234,FOX_START.y),4,.75f,true,.65f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(455,30),4,.85f,true,.60f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(502,30),4,.65f,true,.75f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(600,FOX_START_Y),4,.55f,true,.85f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(600,FOX_START.y),4,.55f,true,.85f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(100,30),4,.95f,true,.95f));
-		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(200,FOX_START_Y),4,1,true,1.2f));
+		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(200,FOX_START.y),4,1,true,1.2f));
 		
 		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(0,0),0,true));
 		grounds.add(new jBackground(jAssets.getTexture("ground1"),new Vector2(jAssets.getTexture("ground1").getWidth(),0),0,true));
@@ -278,10 +278,6 @@ public class RunFoxRun extends ApplicationAdapter {
 	}
 	static enum FoxState {
 		run, jump
-	}
-	
-	private float gameSpeed() {
-		return GAME_SPEED * speedMultiplier; 
 	}
 	
 	static enum GameState {

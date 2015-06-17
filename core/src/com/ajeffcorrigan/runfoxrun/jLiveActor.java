@@ -35,10 +35,18 @@ public class jLiveActor {
 	}
 
 	/**
-	 * @param actorPos the actorPos to set
+	 * @param aPos the actorPos to set
 	 */
-	public void setActorPos(Vector2 actorPos) {
-		this.actorPos = actorPos;
+	public void setActorPos(Vector2 aPos) {
+		this.actorPos.set(aPos);
+		this.updateActorBounds();
+	}
+	
+	/**
+	 * @param aPos the actorPos to set
+	 */
+	public void setActorPosY(float yVal) {
+		this.actorPos.y = yVal;
 		this.updateActorBounds();
 	}
 
@@ -86,7 +94,7 @@ public class jLiveActor {
 	 * @param actorBounds the actorBounds to set
 	 */
 	private void updateActorBounds() {
-		this.actorBounds.setPosition(this.actorPos.add(boundOffset));
+		this.actorBounds.setPosition(this.actorPos.x + this.boundOffset.x, this.actorPos.y + this.boundOffset.y);
 	}
 
 	/**
@@ -105,6 +113,7 @@ public class jLiveActor {
 	
 	public void moveActor(float d_time) {
 		this.actorPos.mulAdd(this.actorVelocity, d_time);
+		this.updateActorBounds();
 	}
 
 }
