@@ -21,15 +21,15 @@ import com.badlogic.gdx.math.Vector2;
 public class RunFoxRun extends ApplicationAdapter {
 
 	//Game constants
-	private static final float FOX_JUMP_IMPULSE = 350;	//Jump impulse
+	private static final float FOX_JUMP_IMPULSE = 330;	//Jump impulse
 	private static final float GRAVITY = -10;			//Gravity force
 	private static final Vector2 FOX_START = new Vector2(75,40);
-	public static final float GAME_SPEED = -300f;		//Base game speed
+	public static final float GAME_SPEED = -320f;		//Base game speed
 	private static final Vector2 BOUNDOFFSET = new Vector2(60,20);
 	private static final Vector2 BOUNDSIZE = new Vector2(70,50);
 	private static final float UPSPEEDVAL = 0.06f;		//Speed up value.
 	private static final float GROUNDLEVEL = 60; 		//Actual ground level.
-	public static final boolean DEBUGON = true;			//Is debug enabled.
+	public static final boolean DEBUGON = false;			//Is debug enabled.
 	
 	private float speedMultiplier = 1;					//Speed multiplier	
 	private boolean assetsInit = false;					//Checks if assets have loaded. 
@@ -79,10 +79,6 @@ public class RunFoxRun extends ApplicationAdapter {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false,this.gw,this.gh);
 		
-		//Create running fox animation.
-		foxrun = new jAnimator(new Texture("run_fox_sheet.png"),12,1,true,false,.05f);
-		foxjump = new jAnimator(new Texture("fox_jump_animation.png"),8,2,false,false,.071f,true);
-		
         stateTime = 0f;
         
         foxActor = new jLiveActor(new Vector2(FOX_START.x, FOX_START.y + .2f),BOUNDSIZE);
@@ -100,19 +96,33 @@ public class RunFoxRun extends ApplicationAdapter {
 			loadAssets();
 			if(assetsInit) { createWorld(); }
 		} else {
-			deltaTime = Gdx.graphics.getDeltaTime();
-	        stateTime += deltaTime; 
 			if(gamestate == GameState.title) { 
 				titleScreen(); 
 				drawWorld();
 			}
 			if(gamestate == GameState.activegame) { 
+				deltaTime = Gdx.graphics.getDeltaTime();
+		        stateTime += deltaTime; 
 				updateWorld();
 				drawWorld();
 			}
 			if(gamestate == GameState.endgame) {
+				endGameScreen();
 				drawWorld();
 			}		
+		}
+	}
+	
+	private void endGameScreen() {
+		if(Gdx.input.justTouched()) {
+			bgitems.clear();
+			staticItems.clear();
+			grounds.clear();
+			create();
+			createWorld();
+			distanceRan = 0;
+			coinCount = 0;
+			gamestate = GameState.activegame;
 		}
 	}
 	
@@ -252,14 +262,20 @@ public class RunFoxRun extends ApplicationAdapter {
 		jAssets.loadTextureAs("ground1", "crosssection_long.png");
 		jAssets.loadTextureAs("tree1", "tree_coniferous_1.png");
 		jAssets.loadTextureAs("coin", "goldcoin.png");
+		jAssets.loadTextureAs("foxrunsheet", "run_fox_sheet.png");
+		jAssets.loadTextureAs("foxjumpsheet", "fox_jump_animation.png");
 		
 		assetsInit = true;
 	}
 	
 	private void createWorld() {
+		//Create running fox animation.
+		foxrun = new jAnimator(jAssets.getTexture("foxrunsheet"),12,1,true,false,.05f);
+		foxjump = new jAnimator(jAssets.getTexture("foxjumpsheet"),8,2,false,false,.071f,true);		
+		
 		//Create background item.
 		bgitems.add(new jBackground(jAssets.getTexture("bush1"),new Vector2(600,30),1,true));
-		bgitems.add(new jBackground(jAssets.getTexture("farpines"), new Vector2(400, -75), 100, .035f));
+		bgitems.add(new jBackground(jAssets.getTexture("farpines"), new Vector2(400, -75), 100, .020f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(400,30),3,.85f,true));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(234,FOX_START.y),4,.75f,true,.65f));
 		bgitems.add(new jBackground(jAssets.getTexture("tree1"),new Vector2(455,30),4,.85f,true,.60f));
