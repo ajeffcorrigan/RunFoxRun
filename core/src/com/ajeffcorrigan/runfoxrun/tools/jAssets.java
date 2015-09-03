@@ -1,4 +1,4 @@
-package com.ajeffcorrigan.runfoxrun;
+package com.ajeffcorrigan.runfoxrun.tools;
 
 import java.util.HashMap;
 

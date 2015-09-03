@@ -1,5 +1,6 @@
-package com.ajeffcorrigan.runfoxrun;
+package com.ajeffcorrigan.runfoxrun.tools;
 
+import com.ajeffcorrigan.runfoxrun.ScreenObjectContainer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 

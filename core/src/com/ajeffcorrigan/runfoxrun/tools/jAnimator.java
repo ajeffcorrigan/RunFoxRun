@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ajeffcorrigan.runfoxrun;
+package com.ajeffcorrigan.runfoxrun.tools;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.Texture;

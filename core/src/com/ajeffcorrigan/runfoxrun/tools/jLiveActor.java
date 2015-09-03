@@ -1,4 +1,4 @@
-package com.ajeffcorrigan.runfoxrun;
+package com.ajeffcorrigan.runfoxrun.tools;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;

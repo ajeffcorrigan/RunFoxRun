@@ -4,32 +4,43 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.ajeffcorrigan.runfoxrun.screens.PlayScreen;
+import com.ajeffcorrigan.runfoxrun.tools.jAnimator;
+import com.ajeffcorrigan.runfoxrun.tools.jAssets;
+import com.ajeffcorrigan.runfoxrun.tools.jBackground;
+import com.ajeffcorrigan.runfoxrun.tools.jLiveActor;
+import com.ajeffcorrigan.runfoxrun.tools.jStaticActor;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class RunFoxRun extends ApplicationAdapter {
+public class RunFoxRun extends Game {
 
+	public static final int G_WIDTH = 400;
+	public static final int G_HEIGHT = 208;
+	public static final float PPM = 100;
+	public static final boolean DEBUGON = true;			//Is debug enabled.
+	
+	public SpriteBatch batch;
+	
 	//Game constants
 	private static final float FOX_JUMP_IMPULSE = 330;	//Jump impulse
 	private static final float GRAVITY = -10;			//Gravity force
 	private static final Vector2 FOX_START = new Vector2(75,40);
 	public static final float GAME_SPEED = -320f;		//Base game speed
 	private static final Vector2 BOUNDOFFSET = new Vector2(60,20);
-	private static final Vector2 BOUNDSIZE = new Vector2(70,50);
+	private static final Vector2 BOUNDSIZE = new Vector2(60,40);
 	private static final float UPSPEEDVAL = 0.06f;		//Speed up value.
 	private static final float GROUNDLEVEL = 60; 		//Actual ground level.
-	public static final boolean DEBUGON = false;			//Is debug enabled.
+	
 	
 	private float speedMultiplier = 1;					//Speed multiplier	
 	private boolean assetsInit = false;					//Checks if assets have loaded. 
@@ -46,8 +57,6 @@ public class RunFoxRun extends ApplicationAdapter {
     
 	private BitmapFont font;
 	
-	SpriteBatch batch;
-	OrthographicCamera camera;
 	Vector2 gravity = new Vector2();
 	FoxState foxstate = FoxState.run;
 	GameState gamestate = GameState.title;				//Set initial state of game, which is title, for now.
@@ -62,7 +71,6 @@ public class RunFoxRun extends ApplicationAdapter {
 	
 	jLiveActor foxActor;
 
-    SpriteBatch spriteBatch;
     TextureRegion currentFrame;
 	
 	@Override
@@ -71,6 +79,8 @@ public class RunFoxRun extends ApplicationAdapter {
 		this.gh = Gdx.graphics.getHeight();				//Get graphics height.
 		
 		batch = new SpriteBatch();
+		setScreen(new PlayScreen(this));
+		
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
 		shaperenderer = new ShapeRenderer();
@@ -90,6 +100,9 @@ public class RunFoxRun extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+		
+		super.render();
+		
 		Gdx.gl.glClearColor((float)135/255, (float)206/255, (float)235/255, 0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if(!this.assetsInit) {
