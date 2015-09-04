@@ -99,6 +99,7 @@ public class jAssets {
 		try { if(!textures.containsKey(sourcekey)) { throw new Exception("Source key: " + sourcekey + " does not exist in textures."); } } catch (Exception e) { e.printStackTrace(); }
 		Texture text = textures.get(sourcekey);
 		try { if (textureregions.get(key)!= null) { throw new Exception("TextureRegion for key " + key + " already exists!"); } } catch (Exception e) { e.printStackTrace(); }
+		
 		TextureRegion tr = new TextureRegion(text,x,y,width,height);
 		textureregions.put(key, tr);
 	}
