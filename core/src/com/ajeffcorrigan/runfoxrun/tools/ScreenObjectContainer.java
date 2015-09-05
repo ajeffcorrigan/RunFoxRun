@@ -1,19 +1,25 @@
-package com.ajeffcorrigan.runfoxrun;
+package com.ajeffcorrigan.runfoxrun.tools;
 
+import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 
-public class ScreenObjectContainer {
+public abstract class ScreenObjectContainer {
 	
+	protected World world;
+	protected Rectangle itemBounds;					//Item bounds for collision and debugging.
+	protected Body body;
 	private Texture itemImg;					//Texture to load as image.
 	private Vector2 itemPos;					//Items current position.
 	private boolean reSpawn;					//Should item re-spawn if eliminated or goes off screen.
 	private float imgHeight;					//Item image height.
 	private float imgWidth;						//Item image width.
 	private float speedMultiplier;				//Speed of the item.
-	private Rectangle itemBounds;				//Item bounds for collision and debugging.
+	
 	
 	public String itemName;						//Name of the item.
 	
@@ -152,7 +158,7 @@ public class ScreenObjectContainer {
 	}
 	
 	public void updateItemX(float dtime) {
-		this.itemPos.x += (dtime * (RunFoxRun.GAME_SPEED * this.speedMultiplier));
+		this.itemPos.x += (dtime * (50 * this.speedMultiplier));
 		this.updateBounds();
 	}
 	
