@@ -4,8 +4,6 @@ import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.ajeffcorrigan.runfoxrun.screens.PlayScreen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -23,13 +21,8 @@ public class Fox extends Sprite{
 	private Texture foxstand;
 	private float stateTimer;
 	
-	private Vector2 actorVelocity;
-	private Vector2 actorPos;
-	private Rectangle actorBounds;
-	private Vector2 boundOffset;
-	
 	public Fox(World world, PlayScreen screen) {
-		super(jAssets.getTexture("foxstill"));
+		//super(jAssets.getTexture("foxstill"));
 		this.world = world;
 		currentState = State.STANDING;
 		previousState = State.STANDING;
@@ -45,7 +38,7 @@ public class Fox extends Sprite{
 	
 	public void defineFox() {
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(RunFoxRun.PPM, .9f * RunFoxRun.PPM);
+		bdef.position.set(32 / RunFoxRun.PPM, 32 / RunFoxRun.PPM);
 		bdef.type = BodyDef.BodyType.DynamicBody;
 		b2body = world.createBody(bdef);
 		
@@ -55,6 +48,8 @@ public class Fox extends Sprite{
 		
 		fdef.shape = shape;
 		b2body.createFixture(fdef);
+		
+		b2body.setLinearVelocity(60 / RunFoxRun.PPM, 0f);
 		
 	}
 
