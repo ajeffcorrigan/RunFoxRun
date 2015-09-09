@@ -38,7 +38,7 @@ public class Fox extends Sprite{
 	
 	public void defineFox() {
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(32 / RunFoxRun.PPM, 32 / RunFoxRun.PPM);
+		bdef.position.set(16 / RunFoxRun.PPM, 64 / RunFoxRun.PPM);
 		bdef.type = BodyDef.BodyType.DynamicBody;
 		b2body = world.createBody(bdef);
 		
@@ -49,7 +49,7 @@ public class Fox extends Sprite{
 		fdef.shape = shape;
 		b2body.createFixture(fdef);
 		
-		b2body.setLinearVelocity(60 / RunFoxRun.PPM, 0f);
+		//b2body.setLinearVelocity(60 / RunFoxRun.PPM, 0f);
 		
 	}
 

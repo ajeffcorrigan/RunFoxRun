@@ -13,10 +13,10 @@ public class GameAssetManager {
 		jAssets.loadTextureAs("worldsheet", "tiles_spritesheet.png");
 		jAssets.loadTextureAs("foxstill", "fox_still.png");
 		
-		jAssets.createTextureRegion("grassLeft", "worldsheet", 504, 504, 70, 70);
-		jAssets.createTextureRegion("grassMid", "worldsheet", 504, 576, 70, 70);
-		jAssets.createTextureRegion("grassRight", "worldsheet", 504, 648, 70, 70);
-		
+		jAssets.loadTextureAs("grassCenter", "grassCenter.png");
+		jAssets.loadTextureAs("grassCenter_Small", "grassCenter_small.png");
+		jAssets.loadTextureAs("grassMid32", "grassMid_32.png");
+
 		jAssets.createTextureRegion("dirt", "worldsheet", 576, 864, 70, 70);
 	}
 }
