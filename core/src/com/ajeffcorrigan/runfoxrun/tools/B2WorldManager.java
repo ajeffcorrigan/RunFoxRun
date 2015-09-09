@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class B2WorldManager {
 
-	public B2WorldManager(World world, Sprite sprite) {
+	public B2WorldManager(World world, Sprite sprite ) {
 		//create body and fixture variables
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -21,6 +21,7 @@ public class B2WorldManager {
         Rectangle rect = sprite.getBoundingRectangle();
 
         bdef.type = BodyDef.BodyType.StaticBody;
+        System.out.println(rect.getX());
         bdef.position.set((rect.getX() + rect.getWidth() / 2) / RunFoxRun.PPM, (rect.getY() + rect.getHeight() / 2) / RunFoxRun.PPM);
         
         body = world.createBody(bdef);

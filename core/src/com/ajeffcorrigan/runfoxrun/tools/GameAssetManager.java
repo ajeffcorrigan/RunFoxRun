@@ -16,6 +16,7 @@ public class GameAssetManager {
 		jAssets.loadTextureAs("grassCenter", "grassCenter.png");
 		jAssets.loadTextureAs("grassCenter_Small", "grassCenter_small.png");
 		jAssets.loadTextureAs("grassMid32", "grassMid_32.png");
+		jAssets.loadTextureAs("grassMid", "grassMid.png");
 
 		jAssets.createTextureRegion("dirt", "worldsheet", 576, 864, 70, 70);
 	}
