@@ -2,6 +2,7 @@ package com.ajeffcorrigan.runfoxrun.screens;
 
 import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.ajeffcorrigan.runfoxrun.tools.Fox;
+import com.ajeffcorrigan.runfoxrun.tools.ScreenGrid;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,6 +19,9 @@ public class PlayScreen implements Screen {
     private OrthographicCamera gamecam;
     private Viewport gamePort;
     
+    private ScreenGrid grid;
+    
+    
     //Fox player
     private Fox player;
 		
@@ -33,6 +37,8 @@ public class PlayScreen implements Screen {
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight(), 0);
         
         player = new Fox();
+        
+        grid = new ScreenGrid(8,1);
         
 	}
 
@@ -53,6 +59,8 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         player.draw(game.batch);
         game.batch.draw(jAssets.getTexture("grassMid"), 0, 0);
+        game.batch.draw(jAssets.getTexture("grassMid"), 70, 0);
+        game.batch.draw(jAssets.getTexture("grassMid"), 630, 0);
         game.batch.end();
         
         
@@ -72,6 +80,7 @@ public class PlayScreen implements Screen {
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched()) {
 			Gdx.app.log("Game cam position X", Float.toString(gamecam.position.x));
+			Gdx.app.log("Number of tiles",Integer.toString(RunFoxRun.gw / 70));
 		}
 		
 	}
