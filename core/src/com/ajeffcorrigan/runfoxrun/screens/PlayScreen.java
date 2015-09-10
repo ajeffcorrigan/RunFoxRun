@@ -7,9 +7,12 @@ import com.ajeffcorrigan.runfoxrun.tools.ScreenGrid;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -22,11 +25,10 @@ public class PlayScreen implements Screen {
 	
 	private RunFoxRun game;
 	
-    //basic playscreen variables
+    //basic play screen variables
     public OrthographicCamera gamecam;
     private Viewport gamePort;
-    
-	
+    private ShapeRenderer shaperenderer;
     
     private ScreenGrid grid; 
     
@@ -42,14 +44,15 @@ public class PlayScreen implements Screen {
         //create a FitViewport to maintain virtual aspect ratio despite screen size
         gamePort = new FitViewport(RunFoxRun.gw, RunFoxRun.gh, gamecam);
         
-        //initially set our gamcam to be centered correctly at the start of of map
+        //initially set our game camera to be centered correctly at the start of of map
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
         
         player = new Fox();
         
         grid = new ScreenGrid(10,1);
         grid.fillGrid(new Sprite(jAssets.getTexture("grassMid")),new Vector2(-70,0));       
-        
+     
+        shaperenderer = new ShapeRenderer();
 	}
 
 	@Override
@@ -72,22 +75,27 @@ public class PlayScreen implements Screen {
         grid.drawgrid(game.batch);
         game.batch.end();
         
-
+        shaperenderer.setProjectionMatrix(gamecam.combined);
+        shaperenderer.begin(ShapeType.Line);
+        shaperenderer.setColor(Color.BLACK);
+        shaperenderer.circle(player.headcircle.x, player.headcircle.y, player.headcircle.radius);
+        shaperenderer.rect(player.getBoundingRectangle().x, player.getBoundingRectangle().y, player.getBoundingRectangle().width, player.getBoundingRectangle().height);
+        shaperenderer.end();
 	}
 
 	private void update(float delta) {
 		handleInput(delta);
 		
-		player.update(delta);
 		grid.update(delta, this);
+		player.update(delta);
 		
 		for(GroundTile gt : grid.screengrid) {
-			if (player.getBoundingRectangle().overlaps(gt.getBoundingRectangle())) { player.setY(gt.getY() + gt.getHeight()); }
+			if (player.getBoundingRectangle().overlaps(gt.getBoundingRectangle()) && gt.isRigid) { player.setY(gt.getY() + gt.getHeight()); }
 		}
-		
+
 		gamecam.translate(new Vector2(delta * VELOCITY,0));
 		
-        //update our gamecam with correct coordinates after changes
+        //update our game camera with correct coordinates after changes
         gamecam.update();		
 		
 	}
@@ -97,6 +105,8 @@ public class PlayScreen implements Screen {
 			Gdx.app.log("Game cam position X", Float.toString(gamecam.position.x));
 			Gdx.app.log("Number of tiles",Integer.toString(RunFoxRun.gw / 70));
 			Gdx.app.log("PlayScreen", Float.toString(Gdx.input.getX()));
+			Gdx.app.log("Fox Bound Rect X", Float.toString(player.getBoundingRectangle().x));
+			Gdx.app.log("Fox Get X", Float.toString(player.getX()));
 		}
 		
 	}

@@ -40,8 +40,13 @@ public class ScreenGrid {
 		GroundTile gt = screengrid.first();	
 		if(!screen.gamecam.frustum.pointInFrustum((gt.getX()+gt.getWidth()), 0, 0)) {
 			screengrid.removeIndex(0);
-			screengrid.add(new GroundTile(new Sprite(screengrid.peek().getTexture()),new Vector2((screengrid.peek().getX() + screengrid.peek().getWidth()),screengrid.peek().getY())));
+			screengrid.add(new GroundTile(new Sprite(screengrid.peek().getTexture()),new Vector2((screengrid.peek().getX() + screengrid.peek().getWidth()),screengrid.peek().getY()),false));
 		}
+	}
+	
+	public void generateNewTile() {
+		Random rand = new Random();
+		
 	}
 	
 }

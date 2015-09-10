@@ -16,4 +16,10 @@ public class GroundTile extends ScreenObjectContainer {
 		this.isRigid = true;
 	}
 	
+	public GroundTile(Sprite sprite, Vector2 orginXY, boolean isRigid) {
+		super(sprite, orginXY);
+		this.bounds = sprite.getBoundingRectangle();
+		this.isRigid = isRigid;
+	}
+	
 }
