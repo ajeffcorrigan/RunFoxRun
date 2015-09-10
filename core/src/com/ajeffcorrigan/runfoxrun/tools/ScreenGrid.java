@@ -42,11 +42,5 @@ public class ScreenGrid {
 			screengrid.removeIndex(0);
 			screengrid.add(new GroundTile(new Sprite(screengrid.peek().getTexture()),new Vector2((screengrid.peek().getX() + screengrid.peek().getWidth()),screengrid.peek().getY()),false));
 		}
-	}
-	
-	public void generateNewTile() {
-		Random rand = new Random();
-		
-	}
-	
+	}	
 }
