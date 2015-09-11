@@ -3,6 +3,10 @@ package com.ajeffcorrigan.runfoxrun.tools;
 public class GameAssetManager {
 
 	public GameAssetManager() {
+		
+		jAssets.loadTextureAs("worldsheet", "tiles_spritesheet.png");
+		
+		
 		jAssets.loadTextureAs("bush1", "bush_1.png");
 		jAssets.loadTextureAs("farpines", "pinehills_distant_1.png");
 		jAssets.loadTextureAs("ground1", "crosssection_long.png");
@@ -10,7 +14,7 @@ public class GameAssetManager {
 		jAssets.loadTextureAs("coin", "goldcoin.png");
 		jAssets.loadTextureAs("foxrunsheet", "run_fox_sheet.png");
 		jAssets.loadTextureAs("foxjumpsheet", "fox_jump_animation.png");
-		jAssets.loadTextureAs("worldsheet", "tiles_spritesheet.png");
+		
 		jAssets.loadTextureAs("foxstill", "fox_still.png");
 		
 		jAssets.loadTextureAs("grassCenter", "grassCenter.png");
