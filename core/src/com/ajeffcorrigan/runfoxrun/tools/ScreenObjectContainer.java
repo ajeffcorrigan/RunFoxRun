@@ -10,6 +10,10 @@ public abstract class ScreenObjectContainer extends Sprite {
 		setPosition(startXY.x, startXY.y);
 	}
 	
+	public ScreenObjectContainer() {
+		
+	}
+	
 }
 	
 

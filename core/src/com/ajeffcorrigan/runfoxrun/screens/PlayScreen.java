@@ -85,15 +85,17 @@ public class PlayScreen implements Screen {
 
 	private void update(float delta) {
 		handleInput(delta);
+		gamecam.translate(new Vector2(delta * VELOCITY,0));
 		
 		grid.update(delta, this);
+		
 		player.update(delta);
 		
 		for(GroundTile gt : grid.screengrid) {
 			if (player.getBoundingRectangle().overlaps(gt.getBoundingRectangle()) && gt.isRigid) { player.setY(gt.getY() + gt.getHeight()); }
 		}
 
-		gamecam.translate(new Vector2(delta * VELOCITY,0));
+		
 		
         //update our game camera with correct coordinates after changes
         gamecam.update();		
