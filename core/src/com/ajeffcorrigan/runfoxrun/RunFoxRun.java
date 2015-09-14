@@ -12,7 +12,6 @@ public class RunFoxRun extends Game {
 	public static int gh;
 	public static final boolean DEBUGON = true;			//Is debug enabled.
 
-	
 	public SpriteBatch batch;
 	public GameAssetManager gam;
 	
@@ -30,6 +29,13 @@ public class RunFoxRun extends Game {
 	@Override
 	public void render () {
 		super.render();
+	}
+	
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		super.dispose();
+		batch.dispose();
 	}
 		
 }

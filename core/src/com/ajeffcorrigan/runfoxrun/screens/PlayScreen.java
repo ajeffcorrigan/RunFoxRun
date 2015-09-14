@@ -2,13 +2,15 @@ package com.ajeffcorrigan.runfoxrun.screens;
 
 import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.ajeffcorrigan.runfoxrun.sprites.ScreenTile;
+import com.ajeffcorrigan.runfoxrun.sprites.foxActor;
+import com.ajeffcorrigan.runfoxrun.sprites.foxActor.State;
 import com.ajeffcorrigan.runfoxrun.tools.GridRow;
 import com.ajeffcorrigan.runfoxrun.tools.ScreenGrid;
-import com.ajeffcorrigan.runfoxrun.tools.jActor;
-import com.ajeffcorrigan.runfoxrun.tools.jActor.State;
+import com.ajeffcorrigan.runfoxrun.tools.WorldPhysicsContainer;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -18,11 +20,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 
 public class PlayScreen implements Screen {
 
-	public static final float VELOCITY = 100;
+	public static final float VELOCITY = 100;					//Game speed.
+	public static final float JUMP_IMPULSE = 360;			//Jump impulse.
+	public static final float GRAVITY = -10;					//Gravity force.
 	
 	private RunFoxRun game;
 	
@@ -31,9 +34,10 @@ public class PlayScreen implements Screen {
     private Viewport gamePort;
     private ShapeRenderer shaperenderer;
     private ScreenGrid grid;
+    private WorldPhysicsContainer wpc;
     
     //Fox player
-    private jActor fox;
+    private foxActor fox;
 		
 	public PlayScreen(RunFoxRun game) {
 		this.game = game;
@@ -47,7 +51,8 @@ public class PlayScreen implements Screen {
         //initially set our game camera to be centered correctly at the start of of map
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
         
-        fox = new jActor(jAssets.getTexture("foxstill"));
+        fox = new foxActor(this);
+        
         grid = new ScreenGrid(5,15,new Vector2(0,0), 70);
         
         for(ScreenTile st : grid.rows.first().tiles) {
@@ -55,6 +60,8 @@ public class PlayScreen implements Screen {
         }
         ScreenTile st = grid.rows.get(1).tiles.get(7);
         st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")));
+        
+        wpc = new WorldPhysicsContainer();
         
         shaperenderer = new ShapeRenderer();
 	}
@@ -82,8 +89,8 @@ public class PlayScreen implements Screen {
         //shaperenderer.setProjectionMatrix(gamecam.combined);
         //shaperenderer.begin(ShapeType.Line);
         //shaperenderer.setColor(Color.BLACK);
-        //grid.drawBounds(shaperenderer);
-        //shaperenderer.circle(player.headcircle.x, player.headcircle.y, player.headcircle.radius);
+        ////grid.drawBounds(shaperenderer);
+        //shaperenderer.circle(fox.headcircle.x, fox.headcircle.y, fox.headcircle.radius);
         //shaperenderer.rect(fox.textureBound);
         //shaperenderer.end();
 	}
@@ -102,8 +109,8 @@ public class PlayScreen implements Screen {
 		
 		for(GridRow gr : grid.rows) {
 			for(ScreenTile st : gr.tiles) {
-				if(fox.actorBound.overlaps(st.tileBounds) && st.isRigid) {
-					fox.actorPosition.y = st.tilePosition.y + st.tileSize;
+				if(fox.getBoundingRectangle().overlaps(st.tileBounds) && st.isRigid) {
+					fox.setPosition(fox.getX(), st.tilePosition.y + st.tileSize);
 					fox.setState(State.RUNNING);
 					onGround = true;
 				}
@@ -120,7 +127,6 @@ public class PlayScreen implements Screen {
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched() && fox.currentState == State.RUNNING) {	
 			fox.setState(State.JUMPINGUP);
-			fox.actorVelocity.y = fox.ACTOR_JUMP_IMPULSE;
 		}
 		
 	}
