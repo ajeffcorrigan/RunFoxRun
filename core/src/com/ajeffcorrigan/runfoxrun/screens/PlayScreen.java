@@ -1,14 +1,14 @@
 package com.ajeffcorrigan.runfoxrun.screens;
 
 import com.ajeffcorrigan.runfoxrun.RunFoxRun;
-import com.ajeffcorrigan.runfoxrun.sprites.GroundTile;
+import com.ajeffcorrigan.runfoxrun.sprites.ScreenTile;
+import com.ajeffcorrigan.runfoxrun.tools.GridRow;
 import com.ajeffcorrigan.runfoxrun.tools.ScreenGrid;
 import com.ajeffcorrigan.runfoxrun.tools.jActor;
 import com.ajeffcorrigan.runfoxrun.tools.jActor.State;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -22,7 +22,7 @@ import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
 
 public class PlayScreen implements Screen {
 
-	public static final float VELOCITY = 78;
+	public static final float VELOCITY = 100;
 	
 	private RunFoxRun game;
 	
@@ -30,7 +30,6 @@ public class PlayScreen implements Screen {
     public OrthographicCamera gamecam;
     private Viewport gamePort;
     private ShapeRenderer shaperenderer;
-    
     private ScreenGrid grid;
     
     //Fox player
@@ -49,8 +48,13 @@ public class PlayScreen implements Screen {
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
         
         fox = new jActor(jAssets.getTexture("foxstill"));
-              
-        grid = new ScreenGrid(5,10,new Vector2(0,0), 70);
+        grid = new ScreenGrid(5,15,new Vector2(0,0), 70);
+        
+        for(ScreenTile st : grid.rows.first().tiles) {
+        	st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")));
+        }
+        ScreenTile st = grid.rows.get(1).tiles.get(7);
+        st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")));
         
         shaperenderer = new ShapeRenderer();
 	}
@@ -71,33 +75,42 @@ public class PlayScreen implements Screen {
         
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
+        grid.draw(game.batch);
         fox.draw(game.batch);
         game.batch.end();
         
-        shaperenderer.setProjectionMatrix(gamecam.combined);
-        shaperenderer.begin(ShapeType.Line);
-        shaperenderer.setColor(Color.BLACK);
-        grid.drawBounds(shaperenderer);
+        //shaperenderer.setProjectionMatrix(gamecam.combined);
+        //shaperenderer.begin(ShapeType.Line);
+        //shaperenderer.setColor(Color.BLACK);
+        //grid.drawBounds(shaperenderer);
         //shaperenderer.circle(player.headcircle.x, player.headcircle.y, player.headcircle.radius);
         //shaperenderer.rect(fox.textureBound);
-        shaperenderer.end();
+        //shaperenderer.end();
 	}
 
 	private void update(float delta) {
+		
+		boolean onGround = false;
+		
 		handleInput(delta);
 		
 		gamecam.translate(new Vector2(delta * VELOCITY,0));
 		
-		//grid.update(delta, this);
+		grid.update(delta, this);
 		
 		fox.update(delta);
 		
-		//for(GroundTile gt : grid.screengrid) {
-		//	if (fox.actorBound.overlaps(gt.getBoundingRectangle()) && gt.isRigid) {
-		//		fox.actorPosition.y = gt.getY() + gt.getHeight();
-		//		fox.setState(State.RUNNING);
-		//	}
-		//}
+		for(GridRow gr : grid.rows) {
+			for(ScreenTile st : gr.tiles) {
+				if(fox.actorBound.overlaps(st.tileBounds) && st.isRigid) {
+					fox.actorPosition.y = st.tilePosition.y + st.tileSize;
+					fox.setState(State.RUNNING);
+					onGround = true;
+				}
+			}
+		}
+		if(!onGround && fox.currentState == State.RUNNING) { fox.setState(State.FALLING); }
+		
 		
         //update our game camera with correct coordinates after changes
         gamecam.update();		
@@ -105,11 +118,7 @@ public class PlayScreen implements Screen {
 	}
 
 	private void handleInput(float delta) {
-		if(Gdx.input.justTouched() && fox.currentState == State.RUNNING) {
-			Gdx.app.log("Game cam position X", Float.toString(gamecam.position.x));
-			Gdx.app.log("Number of tiles",Integer.toString(RunFoxRun.gw / 70));
-			Gdx.app.log("PlayScreen", Float.toString(grid.rows.items[3].tiles.items[2].tilePosition.x));
-			
+		if(Gdx.input.justTouched() && fox.currentState == State.RUNNING) {	
 			fox.setState(State.JUMPINGUP);
 			fox.actorVelocity.y = fox.ACTOR_JUMP_IMPULSE;
 		}

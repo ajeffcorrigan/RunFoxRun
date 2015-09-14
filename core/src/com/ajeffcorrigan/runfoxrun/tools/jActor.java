@@ -11,8 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class jActor {
 	
-	public enum State { RUNNING, JUMPINGUP, JUMPINGDOWN, DEAD, STANDING};
-	public final float ACTOR_JUMP_IMPULSE = 350;							//Jump impulse
+	public enum State { RUNNING, JUMPINGUP, JUMPINGDOWN, DEAD, STANDING, FALLING};
+	public final float ACTOR_JUMP_IMPULSE = 360;							//Jump impulse
 	public final float actorWeight = 2;									//Weight of actor.
 	public final float GRAVITY = -10;										//Gravity force
 	
@@ -45,7 +45,8 @@ public class jActor {
 	}
 
 	public void update(float dt) {
-		if (currentState == State.RUNNING) { actorVelocity.y = this.GRAVITY; } else { actorVelocity.add(0, this.GRAVITY); }	
+		if (currentState == State.RUNNING) { actorVelocity.y = this.GRAVITY; } else { actorVelocity.add(0, this.GRAVITY); }
+		if (currentState == State.FALLING) { actorVelocity.add(0, this.GRAVITY); }
 		this.actorPosition.mulAdd(this.actorVelocity, dt);
 		this.actorBound.setPosition(actorPosition);
 	}

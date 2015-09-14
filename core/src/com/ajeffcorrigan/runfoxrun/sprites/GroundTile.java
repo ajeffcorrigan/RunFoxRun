@@ -10,7 +10,6 @@ public class GroundTile extends ScreenTile {
 	public boolean isRigid;
 	
 	public GroundTile(Sprite sprite, Vector2 orginXY) {
-		super(sprite, orginXY);
 		this.bounds = sprite.getBoundingRectangle();
 		this.isRigid = true;
 	}
