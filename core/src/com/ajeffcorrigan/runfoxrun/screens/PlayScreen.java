@@ -17,14 +17,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
 
-	public static final float VELOCITY = 100;					//Game speed.
-	public static final float JUMP_IMPULSE = 360;			//Jump impulse.
+	public static final float VELOCITY = 140;					//Game speed.
+	public static final float JUMP_IMPULSE = 400;			//Jump impulse.
 	public static final float GRAVITY = -10;					//Gravity force.
 	
 	private RunFoxRun game;
@@ -51,7 +50,7 @@ public class PlayScreen implements Screen {
         //initially set our game camera to be centered correctly at the start of of map
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
         
-        fox = new foxActor(this);
+        fox = new foxActor();
         
         grid = new ScreenGrid(5,15,new Vector2(0,0), 70);
         
@@ -86,13 +85,12 @@ public class PlayScreen implements Screen {
         fox.draw(game.batch);
         game.batch.end();
         
-        //shaperenderer.setProjectionMatrix(gamecam.combined);
-        //shaperenderer.begin(ShapeType.Line);
-        //shaperenderer.setColor(Color.BLACK);
-        ////grid.drawBounds(shaperenderer);
-        //shaperenderer.circle(fox.headcircle.x, fox.headcircle.y, fox.headcircle.radius);
-        //shaperenderer.rect(fox.textureBound);
-        //shaperenderer.end();
+        shaperenderer.setProjectionMatrix(gamecam.combined);
+        shaperenderer.begin(ShapeType.Line);
+        shaperenderer.setColor(Color.BLACK);
+        //grid.drawBounds(shaperenderer);
+        fox.drawBounds(shaperenderer);
+        shaperenderer.end();
 	}
 
 	private void update(float delta) {
@@ -109,7 +107,7 @@ public class PlayScreen implements Screen {
 		
 		for(GridRow gr : grid.rows) {
 			for(ScreenTile st : gr.tiles) {
-				if(fox.getBoundingRectangle().overlaps(st.tileBounds) && st.isRigid) {
+				if(fox.foxBounds.overlaps(st.tileBounds) && st.isRigid) {
 					fox.setPosition(fox.getX(), st.tilePosition.y + st.tileSize);
 					fox.setState(State.RUNNING);
 					onGround = true;
@@ -117,6 +115,7 @@ public class PlayScreen implements Screen {
 			}
 		}
 		if(!onGround && fox.currentState == State.RUNNING) { fox.setState(State.FALLING); }
+		
 		
 		
         //update our game camera with correct coordinates after changes

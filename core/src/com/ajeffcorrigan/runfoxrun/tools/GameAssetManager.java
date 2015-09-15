@@ -14,7 +14,7 @@ public class GameAssetManager {
 		jAssets.loadTextureAs("coin", "goldcoin.png");
 		jAssets.loadTextureAs("foxrunsheet", "run_fox_sheet.png");
 		jAssets.loadTextureAs("foxjumpsheet", "fox_jump_animation.png");
-		jAssets.loadTextureAs("foxrunsheet2", "fox_run_animation_2.png");
+		jAssets.loadTextureAs("foxrunning", "fox_run_animation_right.png");
 		
 		
 		jAssets.loadTextureAs("foxstill", "fox_still.png");
