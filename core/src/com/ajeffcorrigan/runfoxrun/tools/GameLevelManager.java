@@ -1,5 +1,6 @@
 package com.ajeffcorrigan.runfoxrun.tools;
 
+import com.ajeffcorrigan.runfoxrun.screens.PlayScreen;
 import com.ajeffcorrigan.runfoxrun.sprites.ScreenTile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -22,7 +23,7 @@ public class GameLevelManager {
 		gl = new GameLevels();
 	}
 	
-	public ScreenTile constructLevel(GridRow gr) {
+	public ScreenTile constructLevel(GridRow gr, PlayScreen screen) {
 		ScreenTile newTile;
 		int tileSize = gr.tiles.peek().tileSize;
 		Vector2 newPos = new Vector2(gr.tiles.peek().tilePosition.add(tileSize,0));
@@ -31,7 +32,7 @@ public class GameLevelManager {
 				newTile = new ScreenTile(newPos,tileSize);
 				break;
 			case 'G':
-				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTexture("grassMid")));
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTexture("grassMid")),screen);
 				break;
 			default:
 				newTile = new ScreenTile(newPos,tileSize);

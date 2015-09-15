@@ -17,6 +17,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -33,7 +35,10 @@ public class PlayScreen implements Screen {
     private Viewport gamePort;
     private ShapeRenderer shaperenderer;
     private ScreenGrid grid;
-    private WorldPhysicsContainer wpc;
+    
+    //Box2d variables
+    private World world;
+    private Box2DDebugRenderer b2dr;
     
     //Fox player
     private foxActor fox;
@@ -45,30 +50,21 @@ public class PlayScreen implements Screen {
 		gamecam.setToOrtho(false);
 		
         //create a FitViewport to maintain virtual aspect ratio despite screen size
-        gamePort = new FitViewport(RunFoxRun.gw, RunFoxRun.gh, gamecam);
+        gamePort = new FitViewport(RunFoxRun.gw / RunFoxRun.PPM, RunFoxRun.gh / RunFoxRun.PPM, gamecam);
         
         //initially set our game camera to be centered correctly at the start of of map
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
         
         fox = new foxActor();
         
-        grid = new ScreenGrid(5,15,new Vector2(0,0), 70);
+        grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
         
-        for(ScreenTile st : grid.rows.first().tiles) {
-        	st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")));
-        }
-        ScreenTile st = grid.rows.get(1).tiles.get(7);
-        st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")));
-        
-        wpc = new WorldPhysicsContainer();
+        //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
+        world = new World(new Vector2(0, -10), true);
+        //allows for debug lines of our box2d world.
+        b2dr = new Box2DDebugRenderer();
         
         shaperenderer = new ShapeRenderer();
-	}
-
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -79,18 +75,21 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(.5f, .8f, .9f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); 
         
+        //renderer our Box2DDebugLines
+        b2dr.render(world, gamecam.combined);
+        
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
-        grid.draw(game.batch);
+        //grid.draw(game.batch);
         fox.draw(game.batch);
         game.batch.end();
         
-        shaperenderer.setProjectionMatrix(gamecam.combined);
-        shaperenderer.begin(ShapeType.Line);
-        shaperenderer.setColor(Color.BLACK);
+        //shaperenderer.setProjectionMatrix(gamecam.combined);
+        //shaperenderer.begin(ShapeType.Line);
+        //shaperenderer.setColor(Color.BLACK);
         //grid.drawBounds(shaperenderer);
-        fox.drawBounds(shaperenderer);
-        shaperenderer.end();
+        //fox.drawBounds(shaperenderer);
+        //shaperenderer.end();
 	}
 
 	private void update(float delta) {
@@ -99,12 +98,15 @@ public class PlayScreen implements Screen {
 		
 		handleInput(delta);
 		
+		world.step(1 / 60f, 6, 2);
+		
 		gamecam.translate(new Vector2(delta * VELOCITY,0));
 		
 		grid.update(delta, this);
 		
 		fox.update(delta);
 		
+		/*
 		for(GridRow gr : grid.rows) {
 			for(ScreenTile st : gr.tiles) {
 				if(fox.foxBounds.overlaps(st.tileBounds) && st.isRigid) {
@@ -115,8 +117,7 @@ public class PlayScreen implements Screen {
 			}
 		}
 		if(!onGround && fox.currentState == State.RUNNING) { fox.setState(State.FALLING); }
-		
-		
+		*/
 		
         //update our game camera with correct coordinates after changes
         gamecam.update();		
@@ -126,6 +127,10 @@ public class PlayScreen implements Screen {
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched() && fox.currentState == State.RUNNING) {	
 			fox.setState(State.JUMPINGUP);
+		}
+		if(Gdx.input.justTouched()) {
+			Gdx.app.log("PlayScreen", Float.toString(gamecam.position.y));
+			Gdx.app.log("PlayScreen", Float.toString(world.getBodyCount()));
 		}
 		
 	}
@@ -156,6 +161,16 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+    public World getWorld(){
+        return world;
+    }
+
+	@Override
+	public void show() {
 		// TODO Auto-generated method stub
 		
 	}
