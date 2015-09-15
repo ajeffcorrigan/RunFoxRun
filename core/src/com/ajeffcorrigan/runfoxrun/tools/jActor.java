@@ -57,8 +57,7 @@ public class jActor extends Sprite {
 	}
 
 	public void update(float dt) {
-		if (currentState == State.RUNNING) { actorVelocity.y = this.GRAVITY; } else { actorVelocity.add(0, this.GRAVITY); }
-		if (currentState == State.FALLING) { actorVelocity.add(0, this.GRAVITY); }
+
 		this.actorPosition.mulAdd(this.actorVelocity, dt);
 		this.actorBound.setPosition(actorPosition);
 	}
