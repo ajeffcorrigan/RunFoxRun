@@ -41,7 +41,6 @@ public class ScreenGrid {
 	public void update(float dt, PlayScreen screen) {
 		for(GridRow gr : rows) {
 			if(!screen.gamecam.frustum.pointInFrustum((gr.tiles.first().tilePosition.x + gr.tiles.first().tileSize),0,0)) {
-				gr.tiles.get(0).
 				gr.tiles.removeIndex(0);
 				gr.tiles.add(glm.constructLevel(gr,screen));
 				

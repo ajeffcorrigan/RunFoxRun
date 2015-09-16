@@ -20,11 +20,7 @@ public class ScreenTile extends Sprite{
 	public Vector2 tilePosition;
 	public int tileSize;
 	
-    //create body and fixture variables
-    BodyDef bdef = new BodyDef();
-    PolygonShape shape = new PolygonShape();
-    FixtureDef fdef = new FixtureDef();
-    Body body;
+
 	
 	public ScreenTile() { }
 	
@@ -37,21 +33,22 @@ public class ScreenTile extends Sprite{
 	
 	public ScreenTile(Vector2 startXY, int tileSize, Sprite sprite, PlayScreen screen) {
 		super(sprite);
+		
+	    //create body and fixture variables
+	    BodyDef bdef = new BodyDef();
+	    Body body;
         
 	    World world = screen.getWorld();
 		
-		Rectangle rect = sprite.getBoundingRectangle();
-
         bdef.type = BodyDef.BodyType.StaticBody;
-        
-        bdef.position.set((startXY.x + rect.getWidth() / 2) / RunFoxRun.PPM, (startXY.y + rect.getHeight() / 2) / RunFoxRun.PPM);
-
+        bdef.position.set(startXY.x, startXY.y);
         body = world.createBody(bdef);
-
-        shape.setAsBox(rect.getWidth() / 2 / RunFoxRun.PPM, rect.getHeight() / 2 / RunFoxRun.PPM);
         
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
+        
+        FixtureDef fdef = new FixtureDef();   
         fdef.shape = shape;
-        
         body.createFixture(fdef);
         
 		this.tilePosition = new Vector2(startXY);

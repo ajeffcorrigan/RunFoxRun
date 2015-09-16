@@ -1,5 +1,6 @@
 package com.ajeffcorrigan.runfoxrun.sprites;
 
+import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.ajeffcorrigan.runfoxrun.screens.PlayScreen;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -9,6 +10,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 public class foxActor extends Sprite {
@@ -32,12 +39,16 @@ public class foxActor extends Sprite {
 	private Circle foxHead; 
 	public Rectangle foxBounds;
 	public Ellipse foxBody;
+	
+	public World world;
+	public Body b2body;
 			
-	public foxActor() {
+	public foxActor(PlayScreen screen) {
 		super();
 		
 		currentState = State.STANDING;
 		previousState = State.STANDING;
+		world = screen.getWorld();
 		
 		Array<TextureRegion> frames = new Array<TextureRegion>();
         for(int i = 1; i < 12; i++)
@@ -49,7 +60,9 @@ public class foxActor extends Sprite {
         foxYImpulse = PlayScreen.GRAVITY;
         
         super.set(new Sprite(jAssets.getTexture("foxstill")));
-        setPosition(80,80);
+        setPosition(-30,-30);
+        
+        defineActor();
         
         foxBounds = new Rectangle(getX()+boundsOffset,getY(),55,getHeight());
         foxHead = new Circle(foxBounds.x + (foxBounds.width / 1.4f),foxBounds.y+(foxBounds.height/1.8f),16);
@@ -57,6 +70,26 @@ public class foxActor extends Sprite {
         
 	}
 	
+	private void defineActor() {
+		
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set((super.getX() + super.getWidth()/2) / RunFoxRun.PTM, (super.getY() + super.getHeight()/2) / RunFoxRun.PTM);
+
+        b2body = world.createBody(bodyDef);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(super.getWidth()/2 / RunFoxRun.PTM, super.getHeight() /2 / RunFoxRun.PTM);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0.1f;
+
+        b2body.createFixture(fixtureDef);
+        shape.dispose();
+
+	}
+
 	public void update(float delta) {
 		if (currentState == State.JUMPINGUP) { foxYImpulse += PlayScreen.GRAVITY; }
 		if (currentState == State.RUNNING) { foxYImpulse = PlayScreen.GRAVITY; }

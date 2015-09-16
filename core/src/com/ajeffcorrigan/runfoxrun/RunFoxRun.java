@@ -11,7 +11,7 @@ public class RunFoxRun extends Game {
 	public static int gw;
 	public static int gh;
 	public static final boolean DEBUGON = true;			//Is debug enabled.
-	public static final float PPM = 100;
+	public static final float PTM = 100f;
 
 	public SpriteBatch batch;
 	public GameAssetManager gam;

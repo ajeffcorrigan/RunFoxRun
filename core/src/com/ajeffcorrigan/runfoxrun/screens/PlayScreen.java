@@ -28,12 +28,15 @@ public class PlayScreen implements Screen {
 	public static final float JUMP_IMPULSE = 400;			//Jump impulse.
 	public static final float GRAVITY = -10;					//Gravity force.
 	
+	//Main game controller.
 	private RunFoxRun game;
 	
     //basic play screen variables
     public OrthographicCamera gamecam;
     private Viewport gamePort;
     private ShapeRenderer shaperenderer;
+    
+    //Screen grid manager.
     private ScreenGrid grid;
     
     //Box2d variables
@@ -47,20 +50,22 @@ public class PlayScreen implements Screen {
 		this.game = game;
 		
 		gamecam = new OrthographicCamera();
-		gamecam.setToOrtho(false);
+		//gamecam.setToOrtho(false);
 		
         //create a FitViewport to maintain virtual aspect ratio despite screen size
-        gamePort = new FitViewport(RunFoxRun.gw / RunFoxRun.PPM, RunFoxRun.gh / RunFoxRun.PPM, gamecam);
+        gamePort = new FitViewport(RunFoxRun.gw / RunFoxRun.PTM, RunFoxRun.gh / RunFoxRun.PTM, gamecam);
         
-        //initially set our game camera to be centered correctly at the start of of map
+        //gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
         gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
         
-        fox = new foxActor();
+        world = new World(new Vector2(0, -1f), true);
+        
+        fox = new foxActor(this);
         
         grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
         
         //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
-        world = new World(new Vector2(0, -10), true);
+        
         //allows for debug lines of our box2d world.
         b2dr = new Box2DDebugRenderer();
         
@@ -100,11 +105,11 @@ public class PlayScreen implements Screen {
 		
 		world.step(1 / 60f, 6, 2);
 		
-		gamecam.translate(new Vector2(delta * VELOCITY,0));
+		//gamecam.translate(new Vector2(delta * VELOCITY,0));
 		
 		grid.update(delta, this);
 		
-		fox.update(delta);
+		//fox.update(delta);
 		
 		/*
 		for(GridRow gr : grid.rows) {
@@ -119,8 +124,7 @@ public class PlayScreen implements Screen {
 		if(!onGround && fox.currentState == State.RUNNING) { fox.setState(State.FALLING); }
 		*/
 		
-        //update our game camera with correct coordinates after changes
-        gamecam.update();		
+        //gamecam.update();		
 		
 	}
 
@@ -131,6 +135,8 @@ public class PlayScreen implements Screen {
 		if(Gdx.input.justTouched()) {
 			Gdx.app.log("PlayScreen", Float.toString(gamecam.position.y));
 			Gdx.app.log("PlayScreen", Float.toString(world.getBodyCount()));
+			Gdx.app.log("PlayScreen", Float.toString(gamePort.getWorldWidth()));
+			Gdx.app.log("PlayScreen", "fox position:"+fox.getX());
 		}
 		
 	}
