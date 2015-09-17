@@ -34,7 +34,7 @@ public class PlayScreen implements Screen {
     //basic play screen variables
     public OrthographicCamera gamecam;
     private Viewport gamePort;
-    private ShapeRenderer shaperenderer;
+    //private ShapeRenderer shaperenderer;
     
     //Screen grid manager.
     private ScreenGrid grid;
@@ -49,45 +49,44 @@ public class PlayScreen implements Screen {
 	public PlayScreen(RunFoxRun game) {
 		this.game = game;
 		
+		//Game camera and viewport setup.
 		gamecam = new OrthographicCamera();
-		//gamecam.setToOrtho(false);
+		gamePort = new FitViewport(RunFoxRun.gw / RunFoxRun.PTM, RunFoxRun.gh / RunFoxRun.PTM, gamecam);
+		gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
 		
-        //create a FitViewport to maintain virtual aspect ratio despite screen size
-        gamePort = new FitViewport(RunFoxRun.gw / RunFoxRun.PTM, RunFoxRun.gh / RunFoxRun.PTM, gamecam);
-        
-        //gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
-        gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
-        
-        world = new World(new Vector2(0, -1f), true);
-        
-        fox = new foxActor(this);
-        
-        grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
-        
-        //create our Box2D world, setting no gravity in X, -10 gravity in Y, and allow bodies to sleep
-        
-        //allows for debug lines of our box2d world.
-        b2dr = new Box2DDebugRenderer();
-        
-        shaperenderer = new ShapeRenderer();
+		//Box2D world and debugger setup.
+		world = new World(new Vector2(0, -5f), true);
+		b2dr = new Box2DDebugRenderer();
+		
+		//World objects, actors, tiles, etc.
+		fox = new foxActor(this);
+		
+		//gamecam.setToOrtho(false);
+
+        //grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
+               
+        //shaperenderer = new ShapeRenderer();
+		Gdx.app.log("PlayScreen", "start fox box2d body x:"+fox.b2body.getPosition().x);
+		Gdx.app.log("PlayScreen", "start fox box2d body y:"+fox.b2body.getPosition().y);
 	}
 
 	@Override
 	public void render(float delta) {
         update(delta);
         		
-		//Clear the game screen with Black
+		//Clear the game screen 
         Gdx.gl.glClearColor(.5f, .8f, .9f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); 
         
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
         
-        game.batch.setProjectionMatrix(gamecam.combined);
-        game.batch.begin();
+        //game.batch.setProjectionMatrix(gamecam.combined);
+        //game.batch.begin();
         //grid.draw(game.batch);
-        fox.draw(game.batch);
-        game.batch.end();
+        //fox.draw(game.batch);
+
+        //game.batch.end();
         
         //shaperenderer.setProjectionMatrix(gamecam.combined);
         //shaperenderer.begin(ShapeType.Line);
@@ -98,16 +97,18 @@ public class PlayScreen implements Screen {
 	}
 
 	private void update(float delta) {
-		
-		boolean onGround = false;
-		
+		//Handle any input from user.	
 		handleInput(delta);
 		
+		//Step the world physics simulation.
 		world.step(1 / 60f, 6, 2);
+		
+		//Update the game camera.
+		gamecam.update();
 		
 		//gamecam.translate(new Vector2(delta * VELOCITY,0));
 		
-		grid.update(delta, this);
+		//grid.update(delta, this);
 		
 		//fox.update(delta);
 		
@@ -117,14 +118,13 @@ public class PlayScreen implements Screen {
 				if(fox.foxBounds.overlaps(st.tileBounds) && st.isRigid) {
 					fox.setPosition(fox.getX(), st.tilePosition.y + st.tileSize);
 					fox.setState(State.RUNNING);
-					onGround = true;
 				}
 			}
 		}
 		if(!onGround && fox.currentState == State.RUNNING) { fox.setState(State.FALLING); }
 		*/
 		
-        //gamecam.update();		
+        	
 		
 	}
 
@@ -135,9 +135,11 @@ public class PlayScreen implements Screen {
 		if(Gdx.input.justTouched()) {
 			Gdx.app.log("PlayScreen", "gamecam position y:"+Float.toString(gamecam.position.y));
 			Gdx.app.log("PlayScreen", "gamecam position x:"+Float.toString(gamecam.position.x));
-			Gdx.app.log("PlayScreen", Float.toString(world.getBodyCount()));
 			Gdx.app.log("PlayScreen", Float.toString(gamePort.getWorldWidth()));
 			Gdx.app.log("PlayScreen", "fox position:"+fox.getX());
+			Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
+			Gdx.app.log("PlayScreen", "fox box2d body y:"+fox.b2body.getPosition().y);
+			
 		}
 		
 	}

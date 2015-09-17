@@ -132,5 +132,7 @@ public class foxActor extends Sprite {
 		shaperenderer.circle(foxHead.x, foxHead.y, foxHead.radius);
 		shaperenderer.ellipse(foxBody.x, foxBody.y, foxBody.width, foxBody.height);
 	}
+	
+	
 
 }
