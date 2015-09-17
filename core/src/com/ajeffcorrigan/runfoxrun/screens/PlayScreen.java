@@ -133,7 +133,8 @@ public class PlayScreen implements Screen {
 			fox.setState(State.JUMPINGUP);
 		}
 		if(Gdx.input.justTouched()) {
-			Gdx.app.log("PlayScreen", Float.toString(gamecam.position.y));
+			Gdx.app.log("PlayScreen", "gamecam position y:"+Float.toString(gamecam.position.y));
+			Gdx.app.log("PlayScreen", "gamecam position x:"+Float.toString(gamecam.position.x));
 			Gdx.app.log("PlayScreen", Float.toString(world.getBodyCount()));
 			Gdx.app.log("PlayScreen", Float.toString(gamePort.getWorldWidth()));
 			Gdx.app.log("PlayScreen", "fox position:"+fox.getX());

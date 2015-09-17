@@ -1,6 +1,5 @@
 package com.ajeffcorrigan.runfoxrun.sprites;
 
-import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.ajeffcorrigan.runfoxrun.screens.PlayScreen;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
