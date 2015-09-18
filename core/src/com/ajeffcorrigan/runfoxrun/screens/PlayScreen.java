@@ -9,6 +9,7 @@ import com.ajeffcorrigan.runfoxrun.tools.ScreenGrid;
 import com.ajeffcorrigan.runfoxrun.tools.WorldPhysicsContainer;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -34,7 +35,6 @@ public class PlayScreen implements Screen {
     //basic play screen variables
     public OrthographicCamera gamecam;
     private Viewport gamePort;
-    //private ShapeRenderer shaperenderer;
     
     //Screen grid manager.
     private ScreenGrid grid;
@@ -55,19 +55,14 @@ public class PlayScreen implements Screen {
 		gamecam.position.set(gamePort.getWorldWidth() / 2 , gamePort.getWorldHeight() / 2, 0);
 		
 		//Box2D world and debugger setup.
-		world = new World(new Vector2(0, -5f), true);
+		world = new World(new Vector2(0, GRAVITY), true);
 		b2dr = new Box2DDebugRenderer();
 		
 		//World objects, actors, tiles, etc.
 		fox = new foxActor(this);
-		
-		//gamecam.setToOrtho(false);
 
-        //grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
+		//grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
                
-        //shaperenderer = new ShapeRenderer();
-		Gdx.app.log("PlayScreen", "start fox box2d body x:"+fox.b2body.getPosition().x);
-		Gdx.app.log("PlayScreen", "start fox box2d body y:"+fox.b2body.getPosition().y);
 	}
 
 	@Override
@@ -81,19 +76,12 @@ public class PlayScreen implements Screen {
         //renderer our Box2DDebugLines
         b2dr.render(world, gamecam.combined);
         
-        //game.batch.setProjectionMatrix(gamecam.combined);
-        //game.batch.begin();
+        game.batch.setProjectionMatrix(gamecam.combined);
+        game.batch.begin();
         //grid.draw(game.batch);
-        //fox.draw(game.batch);
-
-        //game.batch.end();
+        fox.draw(game.batch);
+        game.batch.end();
         
-        //shaperenderer.setProjectionMatrix(gamecam.combined);
-        //shaperenderer.begin(ShapeType.Line);
-        //shaperenderer.setColor(Color.BLACK);
-        //grid.drawBounds(shaperenderer);
-        //fox.drawBounds(shaperenderer);
-        //shaperenderer.end();
 	}
 
 	private void update(float delta) {
@@ -103,15 +91,17 @@ public class PlayScreen implements Screen {
 		//Step the world physics simulation.
 		world.step(1 / 60f, 6, 2);
 		
+		//gamecam.position.x = fox.b2body.getPosition().x;
+		//gamecam.position.y = fox.b2body.getPosition().y;
+		fox.update(delta);
+		
 		//Update the game camera.
 		gamecam.update();
 		
 		//gamecam.translate(new Vector2(delta * VELOCITY,0));
 		
 		//grid.update(delta, this);
-		
-		//fox.update(delta);
-		
+
 		/*
 		for(GridRow gr : grid.rows) {
 			for(ScreenTile st : gr.tiles) {
@@ -129,24 +119,30 @@ public class PlayScreen implements Screen {
 	}
 
 	private void handleInput(float delta) {
-		if(Gdx.input.justTouched() && fox.currentState == State.RUNNING) {	
-			fox.setState(State.JUMPINGUP);
-		}
 		if(Gdx.input.justTouched()) {
-			Gdx.app.log("PlayScreen", "gamecam position y:"+Float.toString(gamecam.position.y));
-			Gdx.app.log("PlayScreen", "gamecam position x:"+Float.toString(gamecam.position.x));
-			Gdx.app.log("PlayScreen", Float.toString(gamePort.getWorldWidth()));
-			Gdx.app.log("PlayScreen", "fox position:"+fox.getX());
 			Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
 			Gdx.app.log("PlayScreen", "fox box2d body y:"+fox.b2body.getPosition().y);
-			
+			Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());
+			Gdx.app.log("PlayScreen", "world x pos:" + Gdx.input.getX() / RunFoxRun.PTM);
+			Gdx.app.log("PlayScreen", "world y pos:" + Gdx.input.getY() / RunFoxRun.PTM);
+			Gdx.app.log("PlayScreen", "sprite x pos:" + fox.getX());	
+			Gdx.app.log("PlayScreen", "sprite y pos:" + fox.getY());			
 		}
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
+            fox.b2body.applyLinearImpulse(new Vector2(0, 1f), fox.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && fox.b2body.getLinearVelocity().x <= 2)
+            fox.b2body.applyLinearImpulse(new Vector2(0.1f, 0), fox.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && fox.b2body.getLinearVelocity().x >= -2)
+            fox.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), fox.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            fox.b2body.applyLinearImpulse(new Vector2(0, -.05f), fox.b2body.getWorldCenter(), true);
 		
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
+        //updated our game viewport
+        gamePort.update(width,height);
 		
 	}
 
@@ -170,7 +166,8 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		world.dispose();
+		b2dr.dispose();
 		
 	}
 	
