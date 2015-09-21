@@ -61,7 +61,7 @@ public class PlayScreen implements Screen {
 		//World objects, actors, tiles, etc.
 		fox = new foxActor(this);
 
-		//grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
+		grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
                
 	}
 
@@ -78,7 +78,7 @@ public class PlayScreen implements Screen {
         
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
-        //grid.draw(game.batch);
+        grid.draw(game.batch);
         fox.draw(game.batch);
         game.batch.end();
         
