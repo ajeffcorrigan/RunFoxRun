@@ -1,6 +1,8 @@
 package com.ajeffcorrigan.runfoxrun.sprites;
 
+import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.ajeffcorrigan.runfoxrun.screens.PlayScreen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -17,51 +19,58 @@ public class ScreenTile extends Sprite{
 	public boolean tileEmpty;
 	
 	public Vector2 tilePosition;
-	public int tileSize;
+	public float tileSize;
 	
-
+	public Body body;
 	
 	public ScreenTile() { }
 	
-	public ScreenTile(Vector2 startXY, int tileSize) {
+	public ScreenTile(Vector2 startXY, float tSize) {
 		this.tilePosition = new Vector2(startXY);
-		this.tileSize = tileSize;
+		this.tileSize = tSize;
 		this.tileBounds = new Rectangle(this.tilePosition.x, this.tilePosition.y, this.tileSize, this.tileSize);
 		this.tileEmpty = true;
 	}
 	
-	public ScreenTile(Vector2 startXY, int tileSize, Sprite sprite, PlayScreen screen) {
+	public ScreenTile(Vector2 startXY, float tSize, Sprite sprite, PlayScreen screen) {
 		super(sprite);
+		this.tilePosition = startXY;
+		setBounds(this.tilePosition.x, this.tilePosition.y, getWidth() / RunFoxRun.PTM, getHeight() / RunFoxRun.PTM);
+		this.tileSize = tSize;
+		this.tileEmpty = false;
+		this.isRigid = true;
 		
+		defineBlock(screen);
+	}
+	
+	private void defineBlock(PlayScreen screen) {
 	    //create body and fixture variables
 	    BodyDef bdef = new BodyDef();
-	    Body body;
-        
+
 	    World world = screen.getWorld();
 		
         bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set(startXY.x, startXY.y);
+        bdef.position.set(this.tilePosition.x + (getWidth()/2), this.tilePosition.y + (getHeight()/2));
         body = world.createBody(bdef);
         
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
+        shape.setAsBox(getWidth() / 2, getHeight() / 2);
         
         FixtureDef fdef = new FixtureDef();   
         fdef.shape = shape;
         body.createFixture(fdef);
-        
-		this.tilePosition = new Vector2(startXY);
-		super.setPosition(tilePosition.x,tilePosition.y);
-		this.tileSize = tileSize;
-		this.tileBounds = new Rectangle(this.tilePosition.x, this.tilePosition.y, this.tileSize, this.tileSize);
-		this.tileEmpty = false;
-		this.isRigid = true;
 	}
 	
-	public void setRigidSprite(Sprite sprite) {
+	public void setRigidSprite(Sprite sprite, PlayScreen screen) {
 		set(sprite);
-		setPosition(this.tilePosition.x, this.tilePosition.y);
+		setBounds(this.tilePosition.x, this.tilePosition.y, getWidth() / RunFoxRun.PTM, getHeight() / RunFoxRun.PTM);
 		this.tileEmpty = false;
 		this.isRigid = true;
+		defineBlock(screen);
 	}
+	
+	public void dispose(PlayScreen screen) {
+		screen.getWorld().destroyBody(this.body);
+	}
+	
 }

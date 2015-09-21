@@ -61,8 +61,11 @@ public class PlayScreen implements Screen {
 		//World objects, actors, tiles, etc.
 		fox = new foxActor(this);
 
-		grid = new ScreenGrid(5,15,new Vector2(0,0), 70, this);
-               
+		grid = new ScreenGrid(3,15,new Vector2(0,0), 70, this);
+		
+		for(ScreenTile st : grid.rows.first().tiles) {
+			st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")), this);
+		}
 	}
 
 	@Override
@@ -91,42 +94,33 @@ public class PlayScreen implements Screen {
 		//Step the world physics simulation.
 		world.step(1 / 60f, 6, 2);
 		
-		//gamecam.position.x = fox.b2body.getPosition().x;
+		
 		//gamecam.position.y = fox.b2body.getPosition().y;
 		fox.update(delta);
 		
+		//set game cam to follow fox on x axis
+		gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .3f);
+		
+		//update grid
+		grid.update(delta, this);
+		
 		//Update the game camera.
 		gamecam.update();
-		
-		//gamecam.translate(new Vector2(delta * VELOCITY,0));
-		
-		//grid.update(delta, this);
 
-		/*
-		for(GridRow gr : grid.rows) {
-			for(ScreenTile st : gr.tiles) {
-				if(fox.foxBounds.overlaps(st.tileBounds) && st.isRigid) {
-					fox.setPosition(fox.getX(), st.tilePosition.y + st.tileSize);
-					fox.setState(State.RUNNING);
-				}
-			}
-		}
-		if(!onGround && fox.currentState == State.RUNNING) { fox.setState(State.FALLING); }
-		*/
-		
-        	
-		
 	}
 
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched()) {
+			fox.b2body.applyLinearImpulse(new Vector2(0, 5f), fox.b2body.getWorldCenter(), true);
 			Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
-			Gdx.app.log("PlayScreen", "fox box2d body y:"+fox.b2body.getPosition().y);
+			//Gdx.app.log("PlayScreen", "fox box2d body y:"+fox.b2body.getPosition().y);
 			Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());
-			Gdx.app.log("PlayScreen", "world x pos:" + Gdx.input.getX() / RunFoxRun.PTM);
-			Gdx.app.log("PlayScreen", "world y pos:" + Gdx.input.getY() / RunFoxRun.PTM);
+			//Gdx.app.log("PlayScreen", "world x pos:" + Gdx.input.getX() / RunFoxRun.PTM);
+			//Gdx.app.log("PlayScreen", "world y pos:" + Gdx.input.getY() / RunFoxRun.PTM);
 			Gdx.app.log("PlayScreen", "sprite x pos:" + fox.getX());	
-			Gdx.app.log("PlayScreen", "sprite y pos:" + fox.getY());			
+			//Gdx.app.log("PlayScreen", "sprite y pos:" + fox.getY());
+			Gdx.app.log("PlayScreen", "gamePort width: "+ (gamePort.getWorldWidth() *.3));
+			
 		}
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
             fox.b2body.applyLinearImpulse(new Vector2(0, 1f), fox.b2body.getWorldCenter(), true);

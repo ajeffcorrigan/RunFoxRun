@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -53,6 +54,8 @@ public class foxActor extends Sprite {
         super.set(new Sprite(jAssets.getTexture("foxstill")));
         setBounds(0,0, getWidth() / RunFoxRun.PTM, getHeight() / RunFoxRun.PTM);
         defineBody();
+        
+        b2body.setLinearVelocity(2.5f, 0);
           
 	}
 	
@@ -86,6 +89,7 @@ public class foxActor extends Sprite {
 		foxHead.setPosition(foxBounds.x + (foxBounds.width / 1.4f),foxBounds.y+(foxBounds.height/ 1.8f));
 		foxBody.setPosition(foxBounds.x,foxBounds.y+(foxBounds.height/3.4f));
 		*/
+		b2body.setLinearVelocity(2.5f, b2body.getLinearVelocity().y);
 		setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 		setRegion(getFrame(delta));
 	}

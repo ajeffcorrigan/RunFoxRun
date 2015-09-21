@@ -25,7 +25,7 @@ public class GameLevelManager {
 	
 	public ScreenTile constructLevel(GridRow gr, PlayScreen screen) {
 		ScreenTile newTile;
-		int tileSize = gr.tiles.peek().tileSize;
+		float tileSize = gr.tiles.peek().tileSize;
 		Vector2 newPos = new Vector2(gr.tiles.peek().tilePosition.add(tileSize,0));
 		switch(getNewTileCode()) {
 			case 'E':
