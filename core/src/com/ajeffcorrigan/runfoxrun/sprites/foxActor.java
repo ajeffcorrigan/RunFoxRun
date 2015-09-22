@@ -69,8 +69,10 @@ public class foxActor extends Sprite {
         b2body = world.createBody(bdef);
 
         FixtureDef fixtureDef = new FixtureDef();
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox((super.getWidth() / 2 ), (super.getHeight() / 2 ));
+        CircleShape shape = new CircleShape();
+        shape.setRadius(15 / RunFoxRun.PTM);
+        //PolygonShape shape = new PolygonShape();
+        //shape.setAsBox((super.getWidth() / 2 ), (super.getHeight() / 2 ));
         
         fixtureDef.shape = shape;
         b2body.createFixture(fixtureDef);
@@ -89,7 +91,7 @@ public class foxActor extends Sprite {
 		foxHead.setPosition(foxBounds.x + (foxBounds.width / 1.4f),foxBounds.y+(foxBounds.height/ 1.8f));
 		foxBody.setPosition(foxBounds.x,foxBounds.y+(foxBounds.height/3.4f));
 		*/
-		b2body.setLinearVelocity(2.5f, b2body.getLinearVelocity().y);
+		//b2body.setLinearVelocity(2.5f, b2body.getLinearVelocity().y);
 		setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 		setRegion(getFrame(delta));
 	}

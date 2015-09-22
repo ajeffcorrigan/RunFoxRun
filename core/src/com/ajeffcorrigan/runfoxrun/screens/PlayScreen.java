@@ -25,9 +25,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
 
-	public static final float VELOCITY = 140;					//Game speed.
+	public static final float VELOCITY = 3.5f;				//Game speed.
 	public static final float JUMP_IMPULSE = 400;			//Jump impulse.
-	public static final float GRAVITY = -10;					//Gravity force.
+	public static final float GRAVITY = -10;				//Gravity force.
 	
 	//Main game controller.
 	private RunFoxRun game;
@@ -61,7 +61,7 @@ public class PlayScreen implements Screen {
 		//World objects, actors, tiles, etc.
 		fox = new foxActor(this);
 
-		grid = new ScreenGrid(3,15,new Vector2(0,0), 70, this);
+		grid = new ScreenGrid(5,12,new Vector2(0,0), 70, this);
 		
 		for(ScreenTile st : grid.rows.first().tiles) {
 			st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")), this);
@@ -94,11 +94,13 @@ public class PlayScreen implements Screen {
 		//Step the world physics simulation.
 		world.step(1 / 60f, 6, 2);
 		
+		//Maintain running speed.
+		fox.b2body.setLinearVelocity(VELOCITY,fox.b2body.getLinearVelocity().y);
 		
 		//gamecam.position.y = fox.b2body.getPosition().y;
 		fox.update(delta);
 		
-		//set game cam to follow fox on x axis
+		//set game camera to follow fox on x axis
 		gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .3f);
 		
 		//update grid
@@ -119,7 +121,8 @@ public class PlayScreen implements Screen {
 			//Gdx.app.log("PlayScreen", "world y pos:" + Gdx.input.getY() / RunFoxRun.PTM);
 			Gdx.app.log("PlayScreen", "sprite x pos:" + fox.getX());	
 			//Gdx.app.log("PlayScreen", "sprite y pos:" + fox.getY());
-			Gdx.app.log("PlayScreen", "gamePort width: "+ (gamePort.getWorldWidth() *.3));
+			Gdx.app.log("PlayScreen", "linearimpluse y:"+fox.b2body.getLinearVelocity().y+" linearimpluse x:"+fox.b2body.getLinearVelocity().x);
+			
 			
 		}
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
