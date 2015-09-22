@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
 
-	public static final float VELOCITY = 3.5f;				//Game speed.
+	public static final float VELOCITY = 2.5f;				//Game speed.
 	public static final float JUMP_IMPULSE = 400;			//Jump impulse.
 	public static final float GRAVITY = -10;				//Gravity force.
 	
@@ -113,7 +113,9 @@ public class PlayScreen implements Screen {
 
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched()) {
-			fox.b2body.applyLinearImpulse(new Vector2(0, 5f), fox.b2body.getWorldCenter(), true);
+			if(fox.b2body.getLinearVelocity().y == 0f) {
+				fox.b2body.applyLinearImpulse(new Vector2(0, 5.55f), fox.b2body.getWorldCenter(), true);
+			}
 			Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
 			//Gdx.app.log("PlayScreen", "fox box2d body y:"+fox.b2body.getPosition().y);
 			Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());

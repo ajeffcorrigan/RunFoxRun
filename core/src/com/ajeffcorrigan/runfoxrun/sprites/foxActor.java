@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -69,14 +70,27 @@ public class foxActor extends Sprite {
         b2body = world.createBody(bdef);
 
         FixtureDef fixtureDef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(15 / RunFoxRun.PTM);
-        //PolygonShape shape = new PolygonShape();
-        //shape.setAsBox((super.getWidth() / 2 ), (super.getHeight() / 2 ));
         
-        fixtureDef.shape = shape;
+        CircleShape foxhead = new CircleShape();
+        foxhead.setPosition(new Vector2(getWidth() / 3f,0));
+        foxhead.setRadius(16 / RunFoxRun.PTM);
+        fixtureDef.shape = foxhead;
         b2body.createFixture(fixtureDef);
-        shape.dispose();
+        
+        PolygonShape foxbody = new PolygonShape();
+        foxbody.setAsBox(super.getWidth() / 5f, super.getHeight() / 3.5f, new Vector2(13 / RunFoxRun.PTM ,0), 0);
+        fixtureDef.shape = foxbody;
+        b2body.createFixture(fixtureDef);
+        
+        EdgeShape foxfeet = new EdgeShape();
+        foxfeet.set(new Vector2(-(getWidth() / 9f), -(getHeight()/2.7f)),new Vector2(getWidth() / 3.1f, -(getHeight()/2.7f)));
+        fixtureDef.shape = foxfeet;
+        b2body.createFixture(fixtureDef);
+        
+        foxhead.dispose();
+        foxfeet.dispose();
+        foxbody.dispose();
+        
 
 	}
 
