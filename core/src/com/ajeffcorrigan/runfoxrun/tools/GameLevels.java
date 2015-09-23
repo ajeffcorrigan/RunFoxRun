@@ -19,26 +19,26 @@ public class GameLevels {
 			{'E','E','E','E','E'},
 			{'E','E','E','E','E'},
 			{'E','E','E','E','E'},
-			{'G','E','E','G','G'} };
+			{'R','E','E','L','G'} };
 	
 	private char[][] flatmount = {
 			{'E','E','E','E','E'},
 			{'E','E','E','E','E'},
 			{'E','E','G','E','E'},
-			{'E','G','G','G','E'},
+			{'E','G','D','G','E'},
 			{'G','G','G','G','G'} };
 	
 	private char[][] holeflat = {
 			{'E','E','E','E','E'},
 			{'E','E','E','E','E'},
-			{'E','G','G','G','E'},
+			{'E','L','G','R','E'},
 			{'E','E','E','E','E'},
 			{'G','G','G','G','G'} };
 	
 	private char[][] smallholeflat = {
 			{'E','E','E','E','E'},
 			{'E','E','E','E','E'},
-			{'E','E','G','G','E'},
+			{'E','E','L','R','E'},
 			{'E','E','E','E','E'},
 			{'G','G','G','G','G'} };
 	

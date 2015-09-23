@@ -28,11 +28,20 @@ public class GameLevelManager {
 		float tileSize = gr.tiles.peek().tileSize;
 		Vector2 newPos = new Vector2(gr.tiles.peek().tilePosition.add(tileSize,0));
 		switch(getNewTileCode()) {
+			case 'D':
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("dirt")),screen);
+				break;
 			case 'E':
 				newTile = new ScreenTile(newPos,tileSize);
 				break;
 			case 'G':
-				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTexture("grassMid")),screen);
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassMid")),screen);
+				break;
+			case 'L':
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassLeft")),screen);
+				break;
+			case 'R':
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassRight")),screen);
 				break;
 			default:
 				newTile = new ScreenTile(newPos,tileSize);

@@ -4,19 +4,14 @@ import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.ajeffcorrigan.runfoxrun.sprites.ScreenTile;
 import com.ajeffcorrigan.runfoxrun.sprites.foxActor;
 import com.ajeffcorrigan.runfoxrun.sprites.foxActor.State;
-import com.ajeffcorrigan.runfoxrun.tools.GridRow;
 import com.ajeffcorrigan.runfoxrun.tools.ScreenGrid;
-import com.ajeffcorrigan.runfoxrun.tools.WorldPhysicsContainer;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -26,7 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class PlayScreen implements Screen {
 
 	public static final float VELOCITY = 2.5f;				//Game speed.
-	public static final float JUMP_IMPULSE = 400;			//Jump impulse.
+	public static final float JUMP_IMPULSE = 5.5f;			//Jump impulse.
 	public static final float GRAVITY = -10;				//Gravity force.
 	
 	//Main game controller.
@@ -61,10 +56,12 @@ public class PlayScreen implements Screen {
 		//World objects, actors, tiles, etc.
 		fox = new foxActor(this);
 
+		//Initialize the screen grid for blocks.
 		grid = new ScreenGrid(5,12,new Vector2(0,0), 70, this);
 		
+		//Set initial blocks to flat ground.
 		for(ScreenTile st : grid.rows.first().tiles) {
-			st.setRigidSprite(new Sprite(jAssets.getTexture("grassMid")), this);
+			st.setRigidSprite(new Sprite(jAssets.getTextureRegion("grassMid")), this);
 		}
 	}
 
@@ -77,7 +74,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); 
         
         //renderer our Box2DDebugLines
-        b2dr.render(world, gamecam.combined);
+        //b2dr.render(world, gamecam.combined);
         
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
@@ -97,7 +94,6 @@ public class PlayScreen implements Screen {
 		//Maintain running speed.
 		fox.b2body.setLinearVelocity(VELOCITY,fox.b2body.getLinearVelocity().y);
 		
-		//gamecam.position.y = fox.b2body.getPosition().y;
 		fox.update(delta);
 		
 		//set game camera to follow fox on x axis
@@ -114,27 +110,12 @@ public class PlayScreen implements Screen {
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched()) {
 			if(fox.b2body.getLinearVelocity().y == 0f) {
-				fox.b2body.applyLinearImpulse(new Vector2(0, 5.55f), fox.b2body.getWorldCenter(), true);
+				fox.b2body.applyLinearImpulse(new Vector2(0, JUMP_IMPULSE), fox.b2body.getWorldCenter(), true);
 			}
 			Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
 			//Gdx.app.log("PlayScreen", "fox box2d body y:"+fox.b2body.getPosition().y);
-			Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());
-			//Gdx.app.log("PlayScreen", "world x pos:" + Gdx.input.getX() / RunFoxRun.PTM);
-			//Gdx.app.log("PlayScreen", "world y pos:" + Gdx.input.getY() / RunFoxRun.PTM);
-			Gdx.app.log("PlayScreen", "sprite x pos:" + fox.getX());	
-			//Gdx.app.log("PlayScreen", "sprite y pos:" + fox.getY());
-			Gdx.app.log("PlayScreen", "linearimpluse y:"+fox.b2body.getLinearVelocity().y+" linearimpluse x:"+fox.b2body.getLinearVelocity().x);
-			
-			
+			Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());			
 		}
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
-            fox.b2body.applyLinearImpulse(new Vector2(0, 1f), fox.b2body.getWorldCenter(), true);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && fox.b2body.getLinearVelocity().x <= 2)
-            fox.b2body.applyLinearImpulse(new Vector2(0.1f, 0), fox.b2body.getWorldCenter(), true);
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && fox.b2body.getLinearVelocity().x >= -2)
-            fox.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), fox.b2body.getWorldCenter(), true);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            fox.b2body.applyLinearImpulse(new Vector2(0, -.05f), fox.b2body.getWorldCenter(), true);
 		
 	}
 
