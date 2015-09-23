@@ -93,17 +93,6 @@ public class foxActor extends Sprite {
 	}
 
 	public void update(float delta) {
-		/*
-		if (currentState == State.JUMPINGUP) { foxYImpulse += PlayScreen.GRAVITY; }
-		if (currentState == State.RUNNING) { foxYImpulse = PlayScreen.GRAVITY; }
-		if (currentState == State.FALLING) { foxYImpulse += PlayScreen.GRAVITY * (1 + delta); }
-		setRegion(getFrame(delta));
-		translate(PlayScreen.VELOCITY * delta,foxYImpulse * delta);
-		foxBounds.setPosition(getX()+boundsOffset,getY());
-		foxHead.setPosition(foxBounds.x + (foxBounds.width / 1.4f),foxBounds.y+(foxBounds.height/ 1.8f));
-		foxBody.setPosition(foxBounds.x,foxBounds.y+(foxBounds.height/3.4f));
-		*/
-		//b2body.setLinearVelocity(2.5f, b2body.getLinearVelocity().y);
 		
 		setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 		setRegion(getFrame(delta));
@@ -115,19 +104,30 @@ public class foxActor extends Sprite {
 		currentState = newState;		
 	}
 	
+	public State getState() {
+		if (b2body.getLinearVelocity().y > 0 || b2body.getLinearVelocity().y < 0) {
+			return State.JUMPINGUP;
+		} else {
+			return State.RUNNING;
+		}
+	}
+	
 	public TextureRegion getFrame(float dt) {
 		TextureRegion region;
+		this.currentState = getState();
 		
 		switch (currentState) {
 			case RUNNING:
 				region = foxRun.getKeyFrame(stateTime, true);
 				break;
 			default:
-				region = foxRun.getKeyFrame(stateTime, true);
+				region = foxRun.getKeyFrame(0, true);
 				break;
 		}
 		
 		stateTime = currentState == previousState ? stateTime + dt : 0;
+		previousState = currentState;
+		
 		return region;
 	}
 	

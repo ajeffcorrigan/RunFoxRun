@@ -35,7 +35,7 @@ public class ScreenTile extends Sprite{
 	public ScreenTile(Vector2 startXY, float tSize, Sprite sprite, PlayScreen screen) {
 		super(sprite);
 		this.tilePosition = startXY;
-		setBounds(this.tilePosition.x, this.tilePosition.y, getWidth() / RunFoxRun.PTM, getHeight() / RunFoxRun.PTM);
+		setBounds(this.tilePosition.x, this.tilePosition.y, getWidth() / RunFoxRun.PTM + .01f, getHeight() / RunFoxRun.PTM);
 		this.tileSize = tSize;
 		this.tileEmpty = false;
 		this.isRigid = true;

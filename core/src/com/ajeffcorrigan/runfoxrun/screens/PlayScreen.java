@@ -23,6 +23,7 @@ public class PlayScreen implements Screen {
 	public static final float VELOCITY = 2.5f;				//Game speed.
 	public static final float JUMP_IMPULSE = 5.5f;			//Jump impulse.
 	public static final float GRAVITY = -10;				//Gravity force.
+	public final float BLOCKWIDTH = 70;
 	
 	//Main game controller.
 	private RunFoxRun game;
@@ -40,6 +41,8 @@ public class PlayScreen implements Screen {
     
     //Fox player
     private foxActor fox;
+    
+    
 		
 	public PlayScreen(RunFoxRun game) {
 		this.game = game;
@@ -55,9 +58,12 @@ public class PlayScreen implements Screen {
 		
 		//World objects, actors, tiles, etc.
 		fox = new foxActor(this);
-
+		
+		int widthoftiles = (int)Math.ceil(gamePort.getWorldWidth() / (BLOCKWIDTH / RunFoxRun.PTM) + 2);
+		Gdx.app.log("PlayScreen","number of tiles: "+ widthoftiles);
+		
 		//Initialize the screen grid for blocks.
-		grid = new ScreenGrid(5,12,new Vector2(0,0), 70, this);
+		grid = new ScreenGrid(5,widthoftiles,new Vector2(0,0), BLOCKWIDTH, this);
 		
 		//Set initial blocks to flat ground.
 		for(ScreenTile st : grid.rows.first().tiles) {
@@ -104,17 +110,20 @@ public class PlayScreen implements Screen {
 		
 		//Update the game camera.
 		gamecam.update();
-
+		
 	}
 
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched()) {
+			
 			if(fox.b2body.getLinearVelocity().y == 0f) {
 				fox.b2body.applyLinearImpulse(new Vector2(0, JUMP_IMPULSE), fox.b2body.getWorldCenter(), true);
 			}
-			Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
-			//Gdx.app.log("PlayScreen", "fox box2d body y:"+fox.b2body.getPosition().y);
-			Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());			
+			
+			//Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
+			//Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());	
+			//Gdx.app.log("PlayScreen", "fox state: "+ fox.getState());
+			
 		}
 		
 	}
