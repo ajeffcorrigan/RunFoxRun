@@ -81,14 +81,20 @@ public class foxActor extends Sprite {
         b2body.createFixture(fixtureDef);
         
         EdgeShape foxfeet = new EdgeShape();
-        foxfeet.set(new Vector2(-(getWidth() / 9f), -(getHeight()/2.7f)),new Vector2(getWidth() / 3.1f, -(getHeight()/2.7f)));
+        foxfeet.set(new Vector2(-(getWidth() / 10f), -(getHeight()/2.9f)),new Vector2(getWidth() / 3.1f, -(getHeight()/2.9f)));
         fixtureDef.shape = foxfeet;
         b2body.createFixture(fixtureDef);
+        
+        EdgeShape foxface = new EdgeShape();
+        foxface.set(new Vector2(getWidth() / 2.2f, getHeight()/3.2f),new Vector2( getWidth() / 2.2f, -(getHeight()/4.2f)));
+        fixtureDef.shape = foxface;
+        fixtureDef.isSensor = true;
+        b2body.createFixture(fixtureDef).setUserData("foxface");
         
         foxhead.dispose();
         foxfeet.dispose();
         foxbody.dispose();
-        
+        foxface.dispose();
 
 	}
 

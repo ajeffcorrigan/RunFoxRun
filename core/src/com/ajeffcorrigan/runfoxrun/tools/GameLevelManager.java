@@ -29,19 +29,22 @@ public class GameLevelManager {
 		Vector2 newPos = new Vector2(gr.tiles.peek().tilePosition.add(tileSize,0));
 		switch(getNewTileCode()) {
 			case 'D':
-				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("dirt")),screen);
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("dirt")),screen,true);
 				break;
 			case 'E':
 				newTile = new ScreenTile(newPos,tileSize);
 				break;
 			case 'G':
-				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassMid")),screen);
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassMid")),screen,true);
 				break;
 			case 'L':
-				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassLeft")),screen);
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassLeft")),screen,true);
 				break;
 			case 'R':
-				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassRight")),screen);
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassRight")),screen,true);
+				break;
+			case 'W':
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("liquidWaterTop")),screen,false);
 				break;
 			default:
 				newTile = new ScreenTile(newPos,tileSize);

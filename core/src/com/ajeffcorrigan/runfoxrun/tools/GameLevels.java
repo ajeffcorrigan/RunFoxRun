@@ -19,7 +19,7 @@ public class GameLevels {
 			{'E','E','E','E','E'},
 			{'E','E','E','E','E'},
 			{'E','E','E','E','E'},
-			{'R','E','E','L','G'} };
+			{'G','W','W','G','G'} };
 	
 	private char[][] flatmount = {
 			{'E','E','E','E','E'},
@@ -42,6 +42,25 @@ public class GameLevels {
 			{'E','E','E','E','E'},
 			{'G','G','G','G','G'} };
 	
+	private char[][] l1 = {
+			{'E','E','E','E','E'},
+			{'E','E','E','E','E'},
+			{'E','E','E','E','E'},
+			{'E','E','E','E','E'},
+			{'G','W','W','W','G'} };
+	private char[][] l2 = {
+			{'E','E','E','E','E','E'},
+			{'E','E','E','E','E','E'},
+			{'E','E','E','E','E','E'},
+			{'E','E','E','E','E','E'},
+			{'G','W','W','W','W','G'} };
+	private char[][] l3 = {
+			{'E','E','E','E','E','E','E'},
+			{'E','E','E','E','E','E','E'},
+			{'E','E','E','L','R','E','E'},
+			{'E','E','E','E','E','E','E'},
+			{'G','W','W','W','W','W','G'} };
+	
 	
 	public GameLevels() {
 		 levelDetails = new Array<char[][]>();
@@ -50,6 +69,9 @@ public class GameLevels {
 		 levelDetails.add(flatmount);
 		 levelDetails.add(holeflat);
 		 levelDetails.add(smallholeflat);
+		 levelDetails.add(l1);
+		 levelDetails.add(l2);
+		 levelDetails.add(l3);
 		 randomChunk = new RandomXS128();
 	}
 	

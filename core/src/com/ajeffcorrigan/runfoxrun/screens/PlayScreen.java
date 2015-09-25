@@ -20,10 +20,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
 
-	public static final float VELOCITY = 2.5f;				//Game speed.
+	
+	public static final float VELOCITY = 2.8f;				//Game speed.
 	public static final float JUMP_IMPULSE = 5.5f;			//Jump impulse.
 	public static final float GRAVITY = -10;				//Gravity force.
 	public final float BLOCKWIDTH = 70;
+	
+	public enum GameState {PLAYING, STOPPED};
 	
 	//Main game controller.
 	private RunFoxRun game;
@@ -41,6 +44,8 @@ public class PlayScreen implements Screen {
     
     //Fox player
     private foxActor fox;
+    
+    private GameState currentGameState;
     
     
 		
@@ -69,6 +74,11 @@ public class PlayScreen implements Screen {
 		for(ScreenTile st : grid.rows.first().tiles) {
 			st.setRigidSprite(new Sprite(jAssets.getTextureRegion("grassMid")), this);
 		}
+		
+		currentGameState = GameState.STOPPED;
+		
+		world.step(1 / 60f, 6, 2);
+		
 	}
 
 	@Override
@@ -94,20 +104,31 @@ public class PlayScreen implements Screen {
 		//Handle any input from user.	
 		handleInput(delta);
 		
-		//Step the world physics simulation.
-		world.step(1 / 60f, 6, 2);
+		if(currentGameState == GameState.PLAYING) {
+			//Step the world physics simulation.
+			world.step(1 / 60f, 6, 2);
 		
-		//Maintain running speed.
-		fox.b2body.setLinearVelocity(VELOCITY,fox.b2body.getLinearVelocity().y);
+			//Maintain running speed.
+			fox.b2body.setLinearVelocity(VELOCITY,fox.b2body.getLinearVelocity().y);
 		
-		fox.update(delta);
+			fox.update(delta);
+
+			//set game camera to follow fox on x axis
+			gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .3f);
+			
+			//update grid
+			grid.update(delta, this);
+		}
 		
-		//set game camera to follow fox on x axis
-		gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .3f);
+		if(currentGameState == GameState.STOPPED) {
+			
+			fox.setPosition(fox.b2body.getPosition().x - fox.getWidth() / 11.5f, fox.b2body.getPosition().y - fox.getHeight() / 2.5f);
+			
+			//set game camera to follow fox on x axis
+			gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .4f);
+		}
 		
-		//update grid
-		grid.update(delta, this);
-		
+
 		//Update the game camera.
 		gamecam.update();
 		
@@ -115,9 +136,14 @@ public class PlayScreen implements Screen {
 
 	private void handleInput(float delta) {
 		if(Gdx.input.justTouched()) {
-			
-			if(fox.b2body.getLinearVelocity().y == 0f) {
-				fox.b2body.applyLinearImpulse(new Vector2(0, JUMP_IMPULSE), fox.b2body.getWorldCenter(), true);
+			if(currentGameState == GameState.PLAYING) {
+				if(fox.b2body.getLinearVelocity().y == 0f) {
+					fox.b2body.applyLinearImpulse(new Vector2(0, JUMP_IMPULSE), fox.b2body.getWorldCenter(), true);
+				}
+			}
+
+			if(currentGameState == GameState.STOPPED) {
+				currentGameState = GameState.PLAYING;
 			}
 			
 			//Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);

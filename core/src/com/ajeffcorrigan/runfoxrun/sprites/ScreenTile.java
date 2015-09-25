@@ -20,6 +20,7 @@ public class ScreenTile extends Sprite{
 	
 	public Vector2 tilePosition;
 	public float tileSize;
+	public boolean endGameIfTouch = false;
 	
 	public Body body;
 	
@@ -32,15 +33,15 @@ public class ScreenTile extends Sprite{
 		this.tileEmpty = true;
 	}
 	
-	public ScreenTile(Vector2 startXY, float tSize, Sprite sprite, PlayScreen screen) {
+	public ScreenTile(Vector2 startXY, float tSize, Sprite sprite, PlayScreen screen, boolean isRigid) {
 		super(sprite);
 		this.tilePosition = startXY;
 		setBounds(this.tilePosition.x, this.tilePosition.y, getWidth() / RunFoxRun.PTM + .01f, getHeight() / RunFoxRun.PTM);
 		this.tileSize = tSize;
 		this.tileEmpty = false;
-		this.isRigid = true;
+		this.isRigid = isRigid;
 		
-		defineBlock(screen);
+		if(this.isRigid) { defineBlock(screen); }
 	}
 	
 	private void defineBlock(PlayScreen screen) {
