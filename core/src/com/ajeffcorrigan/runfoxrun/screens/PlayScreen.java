@@ -5,6 +5,7 @@ import com.ajeffcorrigan.runfoxrun.sprites.ScreenTile;
 import com.ajeffcorrigan.runfoxrun.sprites.foxActor;
 import com.ajeffcorrigan.runfoxrun.sprites.foxActor.State;
 import com.ajeffcorrigan.runfoxrun.tools.ScreenGrid;
+import com.ajeffcorrigan.runfoxrun.tools.WorldContactListener;
 import com.ajeffcorrigan.runfoxrun.tools.jAssets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -75,9 +76,8 @@ public class PlayScreen implements Screen {
 			st.setRigidSprite(new Sprite(jAssets.getTextureRegion("grassMid")), this);
 		}
 		
+		world.setContactListener(new WorldContactListener());
 		currentGameState = GameState.STOPPED;
-		
-		world.step(1 / 60f, 6, 2);
 		
 	}
 
@@ -90,12 +90,12 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); 
         
         //renderer our Box2DDebugLines
-        //b2dr.render(world, gamecam.combined);
+        b2dr.render(world, gamecam.combined);
         
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         grid.draw(game.batch);
-        fox.draw(game.batch);
+        //fox.draw(game.batch);
         game.batch.end();
         
 	}
@@ -128,7 +128,6 @@ public class PlayScreen implements Screen {
 			gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .4f);
 		}
 		
-
 		//Update the game camera.
 		gamecam.update();
 		
@@ -145,13 +144,7 @@ public class PlayScreen implements Screen {
 			if(currentGameState == GameState.STOPPED) {
 				currentGameState = GameState.PLAYING;
 			}
-			
-			//Gdx.app.log("PlayScreen", "fox box2d body x:"+fox.b2body.getPosition().x);
-			//Gdx.app.log("PlayScreen", "world bodies: "+world.getBodyCount());	
-			//Gdx.app.log("PlayScreen", "fox state: "+ fox.getState());
-			
 		}
-		
 	}
 
 	@Override

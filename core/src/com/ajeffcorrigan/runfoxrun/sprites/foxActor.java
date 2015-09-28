@@ -63,7 +63,7 @@ public class foxActor extends Sprite {
         BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.DynamicBody;
         //Set initial body position, since sprite is attached this is starting sprite position too.
-        bdef.position.set(120 / RunFoxRun.PTM, 80 / RunFoxRun.PTM);
+        bdef.position.set(130 / RunFoxRun.PTM, 100 / RunFoxRun.PTM);
 
         b2body = world.createBody(bdef);
 
@@ -86,7 +86,7 @@ public class foxActor extends Sprite {
         b2body.createFixture(fixtureDef);
         
         EdgeShape foxface = new EdgeShape();
-        foxface.set(new Vector2(getWidth() / 2.2f, getHeight()/3.2f),new Vector2( getWidth() / 2.2f, -(getHeight()/4.2f)));
+        foxface.set(new Vector2(getWidth() / 2.1f, getHeight()/3.2f),new Vector2( getWidth() / 2.1f, -(getHeight()/3.9f)));
         fixtureDef.shape = foxface;
         fixtureDef.isSensor = true;
         b2body.createFixture(fixtureDef).setUserData("foxface");
