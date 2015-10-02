@@ -70,6 +70,25 @@ public class ScreenTile extends Sprite{
 		defineBlock(screen);
 	}
 	
+	public void setSensorFixture(PlayScreen screen) {
+	    //create body and fixture variables
+	    BodyDef bdef = new BodyDef();
+
+	    World world = screen.getWorld();
+		
+        bdef.type = BodyDef.BodyType.StaticBody;
+        bdef.position.set(this.tilePosition.x + (getWidth()/2), this.tilePosition.y + (getHeight()/2));
+        body = world.createBody(bdef);
+        
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(getWidth() / 2, getHeight() / 2);
+        
+        FixtureDef fdef = new FixtureDef();   
+        fdef.shape = shape;
+        fdef.isSensor = true;
+        body.createFixture(fdef);
+	}
+	
 	public void dispose(PlayScreen screen) {
 		screen.getWorld().destroyBody(this.body);
 	}

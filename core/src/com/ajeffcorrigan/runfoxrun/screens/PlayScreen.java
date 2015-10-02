@@ -27,7 +27,7 @@ public class PlayScreen implements Screen {
 	public static final float GRAVITY = -10;				//Gravity force.
 	public final float BLOCKWIDTH = 70;
 	
-	public enum GameState {PLAYING, STOPPED};
+	public enum GameState {PLAYING, STOPPED, PLAYERDEAD};
 	
 	//Main game controller.
 	private RunFoxRun game;
@@ -95,7 +95,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         grid.draw(game.batch);
-        //fox.draw(game.batch);
+        fox.draw(game.batch);
         game.batch.end();
         
 	}
@@ -125,7 +125,17 @@ public class PlayScreen implements Screen {
 			fox.setPosition(fox.b2body.getPosition().x - fox.getWidth() / 11.5f, fox.b2body.getPosition().y - fox.getHeight() / 2.5f);
 			
 			//set game camera to follow fox on x axis
-			gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .4f);
+			gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .3f);
+		}
+		
+		if(currentGameState == GameState.PLAYERDEAD) {
+			
+			fox.setState(foxActor.State.DEAD);
+			
+			fox.b2body.setLinearVelocity(0f,fox.b2body.getLinearVelocity().y);
+			
+			//set game camera to follow fox on x axis
+			gamecam.position.x = fox.b2body.getPosition().x + (gamePort.getWorldWidth() * .3f);
 		}
 		
 		//Update the game camera.

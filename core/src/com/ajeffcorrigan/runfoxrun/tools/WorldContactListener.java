@@ -20,8 +20,6 @@ public class WorldContactListener implements ContactListener{
 	            Gdx.app.log("beginContact", "between fox: " + head.toString() + " and " + object.toString());
 	     }
 	     
-	     
-		
 	}
 
 	@Override

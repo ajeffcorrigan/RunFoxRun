@@ -50,6 +50,8 @@ public class foxActor extends Sprite {
             frames.add(new TextureRegion(jAssets.getTexture("foxrunning"), i * 135, 0, 135, 45));
         foxRun = new Animation(0.08f, frames);
         
+        foxDead = new TextureRegion(jAssets.getTexture("fox_crash"));
+        
         frames.clear();
           
         super.set(new Sprite(jAssets.getTexture("foxstill")));
@@ -78,12 +80,12 @@ public class foxActor extends Sprite {
         PolygonShape foxbody = new PolygonShape();
         foxbody.setAsBox(super.getWidth() / 5f, super.getHeight() / 3.5f, new Vector2(13 / RunFoxRun.PTM ,0), 0);
         fixtureDef.shape = foxbody;
-        b2body.createFixture(fixtureDef);
+        b2body.createFixture(fixtureDef).setUserData(this);
         
         EdgeShape foxfeet = new EdgeShape();
         foxfeet.set(new Vector2(-(getWidth() / 10f), -(getHeight()/2.9f)),new Vector2(getWidth() / 3.1f, -(getHeight()/2.9f)));
         fixtureDef.shape = foxfeet;
-        b2body.createFixture(fixtureDef);
+        b2body.createFixture(fixtureDef).setUserData("foxfeet");
         
         EdgeShape foxface = new EdgeShape();
         foxface.set(new Vector2(getWidth() / 2.1f, getHeight()/3.2f),new Vector2( getWidth() / 2.1f, -(getHeight()/3.9f)));
@@ -126,6 +128,8 @@ public class foxActor extends Sprite {
 			case RUNNING:
 				region = foxRun.getKeyFrame(stateTime, true);
 				break;
+			case DEAD:
+				region = foxDead;
 			default:
 				region = foxRun.getKeyFrame(0, true);
 				break;

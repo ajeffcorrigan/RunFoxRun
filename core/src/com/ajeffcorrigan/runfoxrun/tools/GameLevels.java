@@ -5,77 +5,109 @@ import com.badlogic.gdx.utils.Array;
 
 public class GameLevels {
 	
-	private Array<char[][]> levelDetails;
 	private RandomXS128 randomChunk;
-	private char[][] sflat = {
-			{'E','E','E'},
-			{'E','E','E'},
-			{'E','E','E'},
-			{'E','E','E'},
-			{'G','G','G'} };
+	private Array<String[][]> levelDetails;
+	
+	private String[][] flat1 = { {"E00"}, {"E00"}, {"E00"}, {"E00"}, {"G00"} };
+	private String[][] flat2 = { {"E00","E00"}, {"E00","E00"}, {"E00","E00"}, {"E00","E00"}, {"G00","G00"} };
 
-	private char[][] midhole = {
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'G','W','W','G','G'} };
+	private String[][] smhole = {
+			{"E00","E00","E00","E00"},
+			{"E00","E00","E00","E00"},
+			{"E00","E00","E00","E00"},
+			{"E00","E00","E00","E00"},
+			{"G00","W00","W00","G00"} };
 	
-	private char[][] flatmount = {
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'E','E','G','E','E'},
-			{'E','G','D','G','E'},
-			{'G','G','G','G','G'} };
+	private String[][] midhole = {
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"G00","W00","W00","W00","G00"} };
 	
-	private char[][] holeflat = {
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'E','L','G','R','E'},
-			{'E','E','E','E','E'},
-			{'G','G','G','G','G'} };
+	private String[][] lghole = {
+			{"E00","E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00","E00"},
+			{"G00","W00","W00","W00","W00","G00"} };
 	
-	private char[][] smallholeflat = {
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'E','E','L','R','E'},
-			{'E','E','E','E','E'},
-			{'G','G','G','G','G'} };
+	private String[][] mplatformhole = {
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","L00","R00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"W00","W00","W00","W00","W00"} };
 	
-	private char[][] l1 = {
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'E','E','E','E','E'},
-			{'G','W','W','W','G'} };
-	private char[][] l2 = {
-			{'E','E','E','E','E','E'},
-			{'E','E','E','E','E','E'},
-			{'E','E','E','E','E','E'},
-			{'E','E','E','E','E','E'},
-			{'G','W','W','W','W','G'} };
-	private char[][] l3 = {
-			{'E','E','E','E','E','E','E'},
-			{'E','E','E','E','E','E','E'},
-			{'E','E','E','L','R','E','E'},
-			{'E','E','E','E','E','E','E'},
-			{'G','W','W','W','W','W','G'} };
+	private String[][] mplatformhole2 = {
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","L00","R00","E00","E00"},
+			{"W00","W00","W00","W00","W00"} };
 	
+	private String[][] platform1 = {
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","L00","G00","G00","R00"},
+			{"E00","E00","E00","E00","E00"},
+			{"G00","G00","G00","G00","G00"} };
+	
+	private String[][] platform2 = {
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","L00","G00","R00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"G00","G00","G00","G00","G00"} };
+	
+	private String[][] platform3 = {
+			{"E00","E00","E00","E00"},
+			{"E00","E00","E00","E00"},
+			{"E00","L00","R00","E00"},
+			{"E00","E00","E00","E00"},
+			{"G00","G00","G00","G00"} };
+	
+	private String[][] platform4 = {
+			{"E00","E00","E00","E00"},
+			{"E00","L00","G00","R00"},
+			{"E00","E00","E00","E00"},
+			{"E00","E00","E00","E00"},
+			{"G00","G00","G00","G00"} };
+
+	private String[][] hill1 = {
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00"},
+			{"E00","B00","G00","C00","E00"},
+			{"G00","A00","D00","F00","G00"} };
+	
+	private String[][] hill2 = {
+			{"E00","E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","E00","E00","E00"},
+			{"E00","B00","G00","G00","C00","E00"},
+			{"G00","A00","D00","D00","F00","G00"} };	
 	
 	public GameLevels() {
-		 levelDetails = new Array<char[][]>();
-		 levelDetails.add(sflat);
+		 levelDetails = new Array<String[][]>();
+		 levelDetails.add(flat1);
+		 levelDetails.add(flat2);
+		 levelDetails.add(smhole);
 		 levelDetails.add(midhole);
-		 levelDetails.add(flatmount);
-		 levelDetails.add(holeflat);
-		 levelDetails.add(smallholeflat);
-		 levelDetails.add(l1);
-		 levelDetails.add(l2);
-		 levelDetails.add(l3);
+		 levelDetails.add(lghole);
+		 levelDetails.add(mplatformhole);
+		 levelDetails.add(mplatformhole2);
+		 levelDetails.add(platform1);
+		 levelDetails.add(platform2);
+		 levelDetails.add(platform3);
+		 levelDetails.add(platform4);
+		 levelDetails.add(hill1);
+		 levelDetails.add(hill2);
+		 
 		 randomChunk = new RandomXS128();
 	}
 	
-	public char[][] getLevelDetails() {
+	public String[][] getLevelDetails() {
 		return levelDetails.get(randomChunk.nextInt(levelDetails.size));
 	}
 
