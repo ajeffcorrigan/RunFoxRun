@@ -28,8 +28,6 @@ public class GameAssetManager {
 		jAssets.loadTextureAs("foxstill", "fox_still.png");
 		jAssets.loadTextureAs("fox_crash", "fox_crash.png");
 		
-		
-		
 		jAssets.loadTextureAs("bush1", "bush_1.png");
 		jAssets.loadTextureAs("farpines", "pinehills_distant_1.png");
 		jAssets.loadTextureAs("tree1", "tree_coniferous_1.png");

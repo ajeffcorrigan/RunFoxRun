@@ -42,7 +42,7 @@ public class GameLevelManager {
 				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassHillLeft2")),screen,true);
 				break;
 			case 'B':
-				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassHillLeft")),screen,true);
+				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassHillLeft")),screen,true, true);
 				break;
 			case 'C':
 				newTile = new ScreenTile(newPos,tileSize,new Sprite(jAssets.getTextureRegion("grassHillRight")),screen,true);

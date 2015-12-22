@@ -86,7 +86,13 @@ public class GameLevels {
 			{"E00","E00","E00","E00","E00","E00"},
 			{"E00","E00","E00","E00","E00","E00"},
 			{"E00","B00","G00","G00","C00","E00"},
-			{"G00","A00","D00","D00","F00","G00"} };	
+			{"G00","A00","D00","D00","F00","G00"} };
+	private String[][] hill3 = {
+			{"E00","E00","E00","E00","E00","E00","E00"},
+			{"E00","E00","E00","B00","G00","G00","E00"},
+			{"E00","E00","B00","A00","D00","D00","E00"},
+			{"E00","B00","A00","D00","D00","D00","E00"},
+			{"G00","A00","D00","D00","D00","D00","G00"} };
 	
 	public GameLevels() {
 		 levelDetails = new Array<String[][]>();
@@ -103,6 +109,7 @@ public class GameLevels {
 		 levelDetails.add(platform4);
 		 levelDetails.add(hill1);
 		 levelDetails.add(hill2);
+		 levelDetails.add(hill3);
 		 
 		 randomChunk = new RandomXS128();
 	}
