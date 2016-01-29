@@ -1,10 +1,9 @@
 package com.ajeffcorrigan.runfoxrun.android;
 
-import android.os.Bundle;
-
+import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.ajeffcorrigan.runfoxrun.RunFoxRun;
+import android.os.Bundle;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
