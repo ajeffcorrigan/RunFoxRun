@@ -81,7 +81,7 @@ public class foxActor extends Sprite {
         foxbody.setAsBox(super.getWidth() / 5f, super.getHeight() / 3.5f, new Vector2(13 / RunFoxRun.PTM ,0), 0);
         fixtureDef.shape = foxbody;
         b2body.createFixture(fixtureDef).setUserData(this);
-        
+         
         EdgeShape foxfeet = new EdgeShape();
         foxfeet.set(new Vector2(-(getWidth() / 10f), -(getHeight()/2.9f)),new Vector2(getWidth() / 3.1f, -(getHeight()/2.9f)));
         fixtureDef.shape = foxfeet;
