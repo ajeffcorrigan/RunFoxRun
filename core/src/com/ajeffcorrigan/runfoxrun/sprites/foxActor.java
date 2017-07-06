@@ -126,12 +126,12 @@ public class foxActor extends Sprite {
 		
 		switch (currentState) {
 			case RUNNING:
-				region = foxRun.getKeyFrame(stateTime, true);
+				region = (TextureRegion) foxRun.getKeyFrame(stateTime, true);
 				break;
 			case DEAD:
 				region = foxDead;
 			default:
-				region = foxRun.getKeyFrame(0, true);
+				region = (TextureRegion) foxRun.getKeyFrame(0, true);
 				break;
 		}
 		

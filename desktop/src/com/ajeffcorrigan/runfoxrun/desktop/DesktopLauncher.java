@@ -7,8 +7,8 @@ import com.ajeffcorrigan.runfoxrun.RunFoxRun;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 640;
-        config.height = 480;
+        config.width = 1440;
+        config.height = 860;
 		new LwjglApplication(new RunFoxRun(), config);
 	}
 }
